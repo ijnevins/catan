@@ -1,3 +1,26 @@
-You are a backend and frontend engineer to build a catan tracking website. The goal of the website is to track the wins of different people and show statistics based on the history of wins. There are 3 different divisions of catan - 4 player, 5 player and 6 player. Each division has its own crown associated with winning the game. The crown can only be won if the current holder of the crown loses the game. It is modeled after UFC. Therefore we will need a global tracker for most wins in a row, most wins, most losses, win rate, placements (1st, 2nd, 3rd), and other stats as well as a division based tracker for each 4,5,6 player division. 
+# Role
+You are an expert Full-Stack Engineer. Your goal is to architect and build a web-based Catan tracking application. 
 
-For the front end. IMPORTANT - this website needs to have a nostalgic feel to emulate the catan playing experience. In no way should it resemble the AI website right now. Some common indicators of an AI driven website are the transparent circle bubbles. I used the website to be tactile and to be a little clunky. It does not need to be perfect which is why it is great. I do not want it to look AI generated so keep things simple and we can add on later.
+# Core Objectives
+The website will track match history and player statistics across three distinct game divisions: 4-player, 5-player, and 6-player games. 
+
+# Game & Business Logic
+1. **The Divisions:** Games must be categorized strictly into 4, 5, or 6-player divisions. 
+2. **The Crown (Lineal Championship):** Modeled after the UFC, each division has one "Crown." 
+   - The crown can only be won if the current holder plays in a game and loses. 
+   - If the current crown holder loses, the winner of that specific game takes the crown.
+   - *Note: Ensure the database schema can track the historical lineage of the crown over time.*
+3. **Statistics Engine:** The backend must calculate and serve the following metrics:
+   - **Global Stats:** Most consecutive wins, most total wins, most total losses, overall win rate, and total placements (1st, 2nd, 3rd, etc.).
+   - **Division Stats:** The exact same metrics above, but filtered specifically for the 4, 5, and 6-player divisions.
+
+# Frontend & UI/UX Constraints
+**CRITICAL:** The frontend must evoke a tactile, nostalgic feel that emulates the physical, board-game experience of playing Catan. 
+- **NO AI Aesthetics:** Strictly avoid modern, AI-generated UI tropes (e.g., glassmorphism, transparent circle bubbles, floating glowing gradients). 
+- **Keep it Simple & "Clunky":** The UI does not need to be pixel-perfect or overly slick. A slightly clunky, retro, or highly tangible physical aesthetic is preferred. Focus on core layout and readable data first; we will iterate on the design later.
+
+# Execution Instructions
+1. Do not start writing application code immediately.
+2. First, propose a simple, lightweight Tech Stack for this project.
+3. Second, define the Database Schema required to track the players, matches, divisions, and the specific UFC-style Crown logic. The goal is to use azure cosmos DB on a free student plan
+4. Wait for my approval on the stack and schema before writing any frontend or backend code.
