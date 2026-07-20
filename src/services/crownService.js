@@ -157,7 +157,17 @@ const crownService = {
 
     // 3. Re-process matches in order
     for (const match of matches) {
-      const crownResult = await this.processMatchCrown(match.id, match.division, match.placements, match.playedAt);
+      let winner = match.placements.find(p => p.place === 1);
+      if (!winner) {
+        // Auto-fix placements by sorting them by victory points descending
+        match.placements.sort((a, b) => (b.victoryPoints || 0) - (a.victoryPoints || 0));
+        match.placements.forEach((p, idx) => {
+          p.place = idx + 1;
+        });
+        await db.upsertItem(match);
+      }
+
+      const crownResult = await crownService.processMatchCrown(match.id, match.division, match.placements, match.playedAt);
       
       // Update match with new crown results
       match.crownChallenged = crownResult.crownChallenged;
