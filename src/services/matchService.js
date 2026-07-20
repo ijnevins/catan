@@ -14,23 +14,23 @@ const matchService = {
     const matchId = `match_${uuidv4()}`;
     const date = playedAt || new Date().toISOString();
 
-    const crownResult = await crownService.processMatchCrown(matchId, division, placements, date);
-
     const match = {
       id: matchId,
       partitionKey: 'MATCH',
       type: 'match',
       division,
       playedAt: date,
-      placements,
-      crownChallenged: crownResult.crownChallenged,
-      crownDefended: crownResult.crownDefended,
-      crownHolderBefore: crownResult.crownHolderBefore,
-      crownHolderAfter: crownResult.crownHolderAfter
+      placements
     };
 
     await db.createItem(match);
-    return match;
+
+    // Re-simulate the entire crown lineage chronologically by match playedAt dates
+    await crownService.rebuildCrownTimeline();
+
+    // Query and return the updated match with calculated crown states
+    const matches = await this.getMatches();
+    return matches.find(m => m.id === matchId) || match;
   },
 
   async getMatches() {

@@ -136,6 +136,37 @@ const crownService = {
     return await db.queryItems({
       query: "SELECT * FROM c WHERE c.partitionKey = 'CROWN'"
     });
+  },
+
+  async rebuildCrownTimeline() {
+    // 1. Delete all current crown state records and reigns
+    const crowns = await this.getCurrentCrowns();
+    for (const c of crowns) {
+      await db.deleteItem(c.id, 'CROWN');
+    }
+    const reigns = await this.getReigns();
+    for (const r of reigns) {
+      await db.deleteItem(r.id, 'CROWN_REIGN');
+    }
+
+    // 2. Get all matches sorted chronologically
+    const matches = await db.queryItems({
+      query: "SELECT * FROM c WHERE c.partitionKey = 'MATCH' AND c.type = 'match'"
+    });
+    matches.sort((a, b) => new Date(a.playedAt) - new Date(b.playedAt));
+
+    // 3. Re-process matches in order
+    for (const match of matches) {
+      const crownResult = await this.processMatchCrown(match.id, match.division, match.placements, match.playedAt);
+      
+      // Update match with new crown results
+      match.crownChallenged = crownResult.crownChallenged;
+      match.crownDefended = crownResult.crownDefended;
+      match.crownHolderBefore = crownResult.crownHolderBefore;
+      match.crownHolderAfter = crownResult.crownHolderAfter;
+      
+      await db.upsertItem(match);
+    }
   }
 };
 

@@ -114,6 +114,22 @@ const db = {
     }
     const { resources } = await container.items.query(querySpec).fetchAll();
     return resources;
+  },
+
+  async deleteItem(id, partitionKey) {
+    if (config.USE_MOCK) {
+      const idx = mockDbData.findIndex(i => i.id === id && i.partitionKey === partitionKey);
+      if (idx !== -1) {
+        mockDbData.splice(idx, 1);
+        saveMockData();
+      }
+      return;
+    }
+    try {
+      await container.item(id, partitionKey).delete();
+    } catch (e) {
+      if (e.statusCode !== 404) throw e;
+    }
   }
 };
 
