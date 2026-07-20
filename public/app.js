@@ -1,5 +1,6 @@
 let activeTab = 'global';
 let playersList = [];
+let currentUser = null;
 
 // Axial coordinates list for standard spiral hex board layout
 const hexCoords = [
@@ -20,6 +21,7 @@ const hexCoords = [
 ];
 
 document.addEventListener('DOMContentLoaded', async () => {
+  await initAuth();
   await fetchPlayers();
   setupDivisionSelect();
   await updateDashboard();
@@ -532,7 +534,7 @@ function renderHexBoard(players) {
         hex.className = 'catan-hex';
 
         if (h.type === 'land') {
-          const resource = resourceTypes[h.rank % resourceTypes.length];
+          const resource = h.player.tilePreference || resourceTypes[h.rank % resourceTypes.length];
           hex.classList.add(`hex-${resource}`);
 
           const wins = h.player.totalWins || 0;
@@ -859,3 +861,293 @@ function renderSlider() {
     dotsContainer.appendChild(dot);
   });
 }
+
+// --- Authentication Management ---
+async function initAuth() {
+  const token = localStorage.getItem('catan_token');
+  if (token) {
+    await fetchCurrentUser();
+  } else {
+    renderAuthBar();
+  }
+
+  // Bind UI buttons
+  const showLoginBtn = document.getElementById('showLoginBtn');
+  const showRegisterBtn = document.getElementById('showRegisterBtn');
+  const loginModal = document.getElementById('loginModal');
+  const registerModal = document.getElementById('registerModal');
+  const closeLoginModal = document.getElementById('closeLoginModal');
+  const closeRegisterModal = document.getElementById('closeRegisterModal');
+
+  if (showLoginBtn) {
+    showLoginBtn.addEventListener('click', () => {
+      document.getElementById('loginError').style.display = 'none';
+      document.getElementById('loginForm').reset();
+      loginModal.classList.add('active');
+    });
+  }
+
+  if (showRegisterBtn) {
+    showRegisterBtn.addEventListener('click', async () => {
+      document.getElementById('registerError').style.display = 'none';
+      document.getElementById('registerForm').reset();
+      await populateUnlinkedPlayers();
+      registerModal.classList.add('active');
+    });
+  }
+
+  if (closeLoginModal) {
+    closeLoginModal.addEventListener('click', () => {
+      loginModal.classList.remove('active');
+    });
+  }
+
+  if (closeRegisterModal) {
+    closeRegisterModal.addEventListener('click', () => {
+      registerModal.classList.remove('active');
+    });
+  }
+
+  // Radio button toggle for register modal
+  const linkExistingRadio = document.getElementById('linkExisting');
+  const linkNewRadio = document.getElementById('linkNew');
+  const existingPlayerGroup = document.getElementById('existingPlayerGroup');
+  const newPlayerGroup = document.getElementById('newPlayerGroup');
+
+  if (linkExistingRadio && linkNewRadio) {
+    linkExistingRadio.addEventListener('change', () => {
+      existingPlayerGroup.style.display = 'block';
+      newPlayerGroup.style.display = 'none';
+      document.getElementById('registerPlayerSelect').required = true;
+      document.getElementById('registerPlayerName').required = false;
+    });
+
+    linkNewRadio.addEventListener('change', () => {
+      existingPlayerGroup.style.display = 'none';
+      newPlayerGroup.style.display = 'block';
+      document.getElementById('registerPlayerSelect').required = false;
+      document.getElementById('registerPlayerName').required = true;
+    });
+  }
+
+  // Form submits
+  document.getElementById('loginForm').addEventListener('submit', handleLoginSubmit);
+  document.getElementById('registerForm').addEventListener('submit', handleRegisterSubmit);
+}
+
+async function fetchCurrentUser() {
+  const token = localStorage.getItem('catan_token');
+  if (!token) {
+    currentUser = null;
+    renderAuthBar();
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/auth/me', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      currentUser = data; // contains user and player details
+    } else {
+      localStorage.removeItem('catan_token');
+      currentUser = null;
+    }
+  } catch (err) {
+    console.error('Error fetching current user:', err);
+    currentUser = null;
+  }
+  renderAuthBar();
+}
+
+function renderAuthBar() {
+  const authBar = document.getElementById('authBar');
+  const authWelcome = document.getElementById('authWelcome');
+  const authActions = document.getElementById('authActions');
+  if (!authBar || !authWelcome || !authActions) return;
+
+  if (currentUser && currentUser.user) {
+    const user = currentUser.user;
+    const player = currentUser.player;
+    const playerName = player ? player.name : 'Unlinked';
+
+    authWelcome.innerHTML = `Welcome, <strong>${escapeHtml(user.username)}</strong>! (Linked Player: <strong>${escapeHtml(playerName)}</strong>)`;
+
+    authActions.innerHTML = `
+      <div class="profile-settings">
+        <label for="tilePrefSelect">Hex Skin:</label>
+        <select id="tilePrefSelect" class="tile-pref-select">
+          <option value="wheat" ${user.tilePreference === 'wheat' ? 'selected' : ''}>🌾 Wheat</option>
+          <option value="clay" ${user.tilePreference === 'clay' ? 'selected' : ''}>🧱 Clay</option>
+          <option value="forest" ${user.tilePreference === 'forest' ? 'selected' : ''}>🌲 Forest</option>
+          <option value="ore" ${user.tilePreference === 'ore' ? 'selected' : ''}>⛰️ Ore</option>
+          <option value="pasture" ${user.tilePreference === 'pasture' ? 'selected' : ''}>🐑 Pasture</option>
+          <option value="desert" ${user.tilePreference === 'desert' ? 'selected' : ''}>⏳ Desert</option>
+        </select>
+      </div>
+      <button class="auth-btn btn-logout" id="logoutBtn">Logout</button>
+    `;
+
+    document.getElementById('tilePrefSelect').addEventListener('change', handleTilePreferenceChange);
+    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+  } else {
+    authWelcome.innerText = 'Welcome! Log in to customize your tile preference.';
+    authActions.innerHTML = `
+      <button class="auth-btn" id="showLoginBtn">Login</button>
+      <button class="auth-btn" id="showRegisterBtn">Register</button>
+    `;
+    // Re-bind listeners as buttons were recreated
+    document.getElementById('showLoginBtn').addEventListener('click', () => {
+      document.getElementById('loginError').style.display = 'none';
+      document.getElementById('loginForm').reset();
+      document.getElementById('loginModal').classList.add('active');
+    });
+    document.getElementById('showRegisterBtn').addEventListener('click', async () => {
+      document.getElementById('registerError').style.display = 'none';
+      document.getElementById('registerForm').reset();
+      await populateUnlinkedPlayers();
+      document.getElementById('registerModal').classList.add('active');
+    });
+  }
+}
+
+async function handleLoginSubmit(e) {
+  e.preventDefault();
+  const username = document.getElementById('loginUsername').value;
+  const password = document.getElementById('loginPassword').value;
+  const errDiv = document.getElementById('loginError');
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      localStorage.setItem('catan_token', data.token);
+      document.getElementById('loginModal').classList.remove('active');
+      await fetchCurrentUser();
+      await updateDashboard();
+    } else {
+      const err = await res.json();
+      errDiv.innerText = err.error || 'Login failed';
+      errDiv.style.display = 'block';
+    }
+  } catch (err) {
+    errDiv.innerText = 'Network error during login';
+    errDiv.style.display = 'block';
+  }
+}
+
+async function handleRegisterSubmit(e) {
+  e.preventDefault();
+  const username = document.getElementById('registerUsername').value;
+  const password = document.getElementById('registerPassword').value;
+  const linkType = document.querySelector('input[name="linkType"]:checked').value;
+  const errDiv = document.getElementById('registerError');
+
+  const bodyData = { username, password };
+  if (linkType === 'existing') {
+    bodyData.playerId = document.getElementById('registerPlayerSelect').value;
+    if (!bodyData.playerId) {
+      errDiv.innerText = 'Please select a player to link to';
+      errDiv.style.display = 'block';
+      return;
+    }
+  } else {
+    bodyData.newPlayerName = document.getElementById('registerPlayerName').value;
+    if (!bodyData.newPlayerName || !bodyData.newPlayerName.trim()) {
+      errDiv.innerText = 'Please enter a name for the new player';
+      errDiv.style.display = 'block';
+      return;
+    }
+  }
+
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bodyData)
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      localStorage.setItem('catan_token', data.token);
+      document.getElementById('registerModal').classList.remove('active');
+      await fetchCurrentUser();
+      await updateDashboard();
+    } else {
+      const err = await res.json();
+      errDiv.innerText = err.error || 'Registration failed';
+      errDiv.style.display = 'block';
+    }
+  } catch (err) {
+    errDiv.innerText = 'Network error during registration';
+    errDiv.style.display = 'block';
+  }
+}
+
+async function handleLogout() {
+  const token = localStorage.getItem('catan_token');
+  if (token) {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+    } catch (e) {
+      console.error('Error invalidating session on server:', e);
+    }
+  }
+  localStorage.removeItem('catan_token');
+  currentUser = null;
+  renderAuthBar();
+  await updateDashboard();
+}
+
+async function handleTilePreferenceChange(e) {
+  const tilePreference = e.target.value;
+  const token = localStorage.getItem('catan_token');
+  if (!token) return;
+
+  try {
+    const res = await fetch('/api/auth/profile/tile', {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ tilePreference })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      currentUser.user.tilePreference = data.user.tilePreference;
+      await updateDashboard();
+    } else {
+      alert('Failed to update tile preference');
+    }
+  } catch (err) {
+    console.error('Error updating tile preference:', err);
+  }
+}
+
+async function populateUnlinkedPlayers() {
+  const select = document.getElementById('registerPlayerSelect');
+  if (!select) return;
+
+  try {
+    const res = await fetch('/api/auth/unlinked-players');
+    const players = await res.json();
+
+    select.innerHTML = '<option value="">-- Select Player --</option>' +
+      players.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+  } catch (err) {
+    console.error('Error fetching unlinked players:', err);
+  }
+}
+

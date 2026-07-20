@@ -11,6 +11,7 @@ const statsEngine = {
       stats[player.id] = {
         id: player.id,
         name: player.name,
+        tilePreference: player.tilePreference || null,
         totalWins: 0,
         totalLosses: 0,
         winRate: 0,
@@ -32,6 +33,7 @@ const statsEngine = {
           stats[pId] = {
             id: pId,
             name: p.playerName,
+            tilePreference: null,
             totalWins: 0,
             totalLosses: 0,
             winRate: 0,

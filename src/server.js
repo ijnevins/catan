@@ -7,6 +7,7 @@ const playerRoutes = require('./routes/playerRoutes');
 const matchRoutes = require('./routes/matchRoutes');
 const statsRoutes = require('./routes/statsRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
+const authRoutes = require('./routes/authRoutes');
 const crownService = require('./services/crownService');
 const galleryService = require('./services/galleryService');
 
@@ -24,6 +25,7 @@ app.use('/api/players', playerRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/auth', authRoutes);
 
 // UFC Crown endpoint specifically requested in checklist
 app.get('/api/crowns', async (req, res) => {

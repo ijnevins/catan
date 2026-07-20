@@ -9,6 +9,16 @@
 </head>
 
 <body>
+  <div class="auth-bar" id="authBar">
+    <div class="auth-left">
+      <span class="auth-welcome" id="authWelcome">Welcome! Log in to customize your tile preference.</span>
+    </div>
+    <div class="auth-right" id="authActions">
+      <button class="auth-btn" id="showLoginBtn">Login</button>
+      <button class="auth-btn" id="showRegisterBtn">Register</button>
+    </div>
+  </div>
+
   <header class="tactile-header">
     <img src="images/catan.png" alt="Catan Lineal Championship" class="main-logo">
     <p>Tracking matches and UFC-style division crowns</p>
@@ -67,7 +77,7 @@
           <input type="datetime-local" id="matchDate" required>
         </div>
 
-        <button type="submit" class="retro-btn btn-primary">Lock Match Record</button>
+        <button type="submit" class="retro-btn btn-primary">Log Match</button>
       </form>
     </section>
 
@@ -201,6 +211,65 @@
   <footer class="tactile-footer">
     <p>Hexes, clay, and wheat. Long live the Crown holder.</p>
   </footer>
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-content catan-card">
+      <span class="modal-close" id="closeLoginModal">&times;</span>
+      <h2 class="section-title">Login</h2>
+      <div id="loginError" class="auth-error" style="display: none;"></div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginUsername">Username:</label>
+          <input type="text" id="loginUsername" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password:</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit" class="retro-btn btn-primary">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- REGISTER MODAL -->
+  <div id="registerModal" class="modal-overlay">
+    <div class="modal-content catan-card">
+      <span class="modal-close" id="closeRegisterModal">&times;</span>
+      <h2 class="section-title">Register</h2>
+      <div id="registerError" class="auth-error" style="display: none;"></div>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="registerUsername">Username:</label>
+          <input type="text" id="registerUsername" required>
+        </div>
+        <div class="form-group">
+          <label for="registerPassword">Password:</label>
+          <input type="password" id="registerPassword" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Link Profile To:</label>
+          <div class="link-type-options">
+            <input type="radio" id="linkExisting" name="linkType" value="existing" checked>
+            <label for="linkExisting" class="inline-label">Existing Player</label>
+            <input type="radio" id="linkNew" name="linkType" value="new">
+            <label for="linkNew" class="inline-label">Create New Player</label>
+          </div>
+        </div>
+        <div class="form-group" id="existingPlayerGroup">
+          <label for="registerPlayerSelect">Choose Player:</label>
+          <select id="registerPlayerSelect">
+            <option value="">-- Select Player --</option>
+          </select>
+        </div>
+        <div class="form-group" id="newPlayerGroup" style="display: none;">
+          <label for="registerPlayerName">New Player Name:</label>
+          <input type="text" id="registerPlayerName" placeholder="Enter name...">
+        </div>
+        <button type="submit" class="retro-btn btn-secondary">Register &amp; Link</button>
+      </form>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
