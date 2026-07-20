@@ -102,29 +102,88 @@ body {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
+  padding: 10px 0;
+  align-items: flex-start;
 }
 
 .crown-badge {
-  background-color: var(--color-wheat);
-  border: 3px solid var(--color-border);
-  padding: 15px;
-  border-radius: 6px;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
   text-align: center;
-  box-shadow: 4px 4px 0px var(--color-border);
-  min-width: 180px;
+  min-width: 260px;
+  max-width: 340px;
+  flex: 1;
+  position: relative;
+  display: inline-block;
+}
+
+.crown-badge .scroll-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.25s ease, filter 0.25s ease;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35));
+}
+
+.crown-badge:hover .scroll-img {
+  transform: translateY(-4px) scale(1.03);
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.45));
+}
+
+.crown-badge .scroll-content {
+  position: absolute;
+  top: 16%;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  gap: 4px;
 }
 
 .crown-badge h3 {
-  margin: 0 0 10px 0;
+  margin: 0 0 6px 0;
   font-family: var(--font-header);
+  font-weight: 900;
   color: var(--color-clay);
+  font-size: 1.1rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  letter-spacing: 0.5px;
+}
+
+.crown-badge .crown-icon {
+  font-size: 1.8rem;
+  margin-bottom: 2px;
+  display: block;
+  filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
 }
 
 .crown-badge .holder-name {
   font-size: 1.3rem;
-  font-weight: bold;
+  font-weight: 900;
   color: var(--color-ink);
+  text-shadow: 1px 1px 0px rgba(245,242,235,0.6);
+  margin-bottom: 4px;
+}
+
+.crown-badge .defenses-info {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #444;
+  font-style: italic;
+}
+
+.crown-badge .vacant-text {
+  color: #888;
+  font-size: 1rem;
+  font-style: italic;
 }
 
 .form-group {

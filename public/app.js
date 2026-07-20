@@ -160,15 +160,23 @@ async function renderCrownsAndLineage() {
       
       if (crown) {
         badge.innerHTML = `
-          <h3>${div}-Player Crown</h3>
-          <div class="holder-name">${escapeHtml(crown.currentHolderName)}</div>
-          <div>Defenses: <strong>${crown.defensesCount}</strong></div>
+          <img src="images/scroll.webp" alt="Scroll" class="scroll-img">
+          <div class="scroll-content">
+            <span class="crown-icon">👑</span>
+            <h3>${div}-Player Crown</h3>
+            <div class="holder-name">${escapeHtml(crown.currentHolderName)}</div>
+            <div class="defenses-info">⚔️ ${crown.defensesCount} Defense${crown.defensesCount !== 1 ? 's' : ''}</div>
+          </div>
         `;
       } else {
         badge.innerHTML = `
-          <h3>${div}-Player Crown</h3>
-          <div class="holder-name" style="color:#777; font-size:1rem;">Vacant</div>
-          <div>No champion crowned yet</div>
+          <img src="images/scroll.webp" alt="Scroll" class="scroll-img">
+          <div class="scroll-content">
+            <span class="crown-icon">🏰</span>
+            <h3>${div}-Player Crown</h3>
+            <div class="holder-name vacant-text">Vacant</div>
+            <div class="defenses-info">No champion crowned yet</div>
+          </div>
         `;
       }
       crownsContainer.appendChild(badge);
