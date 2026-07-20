@@ -47,7 +47,7 @@ const statsEngine = {
         const pStats = stats[pId];
         pStats.placements[p.place] = (pStats.placements[p.place] || 0) + 1;
 
-        pStats.totalMetropolises += p.metropolis ? 1 : 0;
+        pStats.totalMetropolises += typeof p.metropolis === 'boolean' ? (p.metropolis ? 1 : 0) : (parseInt(p.metropolis, 10) || 0);
         pStats.totalCities += parseInt(p.cities, 10) || 0;
         pStats.totalSettlements += parseInt(p.settlements, 10) || 0;
         pStats.totalLongestRoads += p.longestRoad ? 1 : 0;

@@ -111,9 +111,14 @@ function setupDivisionSelect() {
     citiesInput.value = '0';
     citiesInput.className = 'cities-input';
 
-    const metropolisCheckbox = document.createElement('input');
-    metropolisCheckbox.type = 'checkbox';
-    metropolisCheckbox.className = 'metropolis-checkbox';
+    const metropolisInput = document.createElement('input');
+    metropolisInput.type = 'number';
+    metropolisInput.placeholder = 'Metro';
+    metropolisInput.required = true;
+    metropolisInput.min = '0';
+    metropolisInput.max = '3';
+    metropolisInput.value = '0';
+    metropolisInput.className = 'metropolis-input';
 
     const longestRoadCheckbox = document.createElement('input');
     longestRoadCheckbox.type = 'checkbox';
@@ -124,7 +129,7 @@ function setupDivisionSelect() {
     row.appendChild(vpInput);
     row.appendChild(settlementsInput);
     row.appendChild(citiesInput);
-    row.appendChild(metropolisCheckbox);
+    row.appendChild(metropolisInput);
     row.appendChild(longestRoadCheckbox);
     container.appendChild(row);
   }
@@ -303,7 +308,7 @@ async function handleMatchSubmit(e) {
     const vpVal = rows[i].querySelector('.vp-input').value;
     const settlementsVal = rows[i].querySelector('.settlements-input').value;
     const citiesVal = rows[i].querySelector('.cities-input').value;
-    const metropolisChecked = rows[i].querySelector('.metropolis-checkbox').checked;
+    const metropolisVal = rows[i].querySelector('.metropolis-input').value;
     const longestRoadChecked = rows[i].querySelector('.longest-road-checkbox').checked;
     
     const playerId = select.value;
@@ -326,7 +331,7 @@ async function handleMatchSubmit(e) {
       victoryPoints: parseInt(vpVal, 10),
       settlements: parseInt(settlementsVal, 10) || 0,
       cities: parseInt(citiesVal, 10) || 0,
-      metropolis: metropolisChecked,
+      metropolis: parseInt(metropolisVal, 10) || 0,
       longestRoad: longestRoadChecked
     });
   }
