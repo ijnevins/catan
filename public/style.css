@@ -1,5 +1,4 @@
 /* Physical, Board-game theme CSS */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Special+Elite&family=Courier+Prime&display=swap');
 
 :root {
   --color-wood: #8B5A2B;
@@ -11,9 +10,9 @@
   --color-ink: #2B2620;
   --color-border: #3A322D;
   
-  --font-header: 'Cinzel', serif;
-  --font-tactile: 'Special Elite', monospace;
-  --font-data: 'Courier Prime', monospace;
+  --font-header: 'Minion Pro', 'Minion', serif;
+  --font-tactile: 'Minion Pro', 'Minion', serif;
+  --font-data: 'Minion Pro', 'Minion', serif;
 }
 
 body {
