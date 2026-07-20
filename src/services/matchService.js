@@ -14,13 +14,31 @@ const matchService = {
     const matchId = `match_${uuidv4()}`;
     const date = playedAt || new Date().toISOString();
 
+    const players = await db.queryItems({
+      query: "SELECT * FROM c WHERE c.partitionKey = 'PLAYER' AND c.type = 'player'"
+    });
+
+    const resolvedPlacements = [];
+    for (let idx = 0; idx < placements.length; idx++) {
+      resolvedPlacements.push(await crownService.resolvePlacement(placements[idx], idx, players, division));
+    }
+
+    resolvedPlacements.sort((a, b) => (b.victoryPoints || 0) - (a.victoryPoints || 0));
+    let currentRank = 1;
+    resolvedPlacements.forEach((p, idx) => {
+      if (idx > 0 && (p.victoryPoints || 0) < (resolvedPlacements[idx - 1].victoryPoints || 0)) {
+        currentRank = idx + 1;
+      }
+      p.place = currentRank;
+    });
+
     const match = {
       id: matchId,
       partitionKey: 'MATCH',
       type: 'match',
       division,
       playedAt: date,
-      placements
+      placements: resolvedPlacements
     };
 
     await db.createItem(match);

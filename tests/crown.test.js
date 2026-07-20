@@ -84,4 +84,48 @@ describe('Crown and Match Service', () => {
     expect(crown4.currentHolderId).toBe('p_bob');
     expect(crown4.defensesCount).toBe(1);
   });
+
+  test('should resolve string placements and tie rankings correctly', async () => {
+    const matchPlacements = [
+      'Alice',
+      { playerName: 'Bob', victoryPoints: 8 },
+      { playerName: 'Charlie', victoryPoints: 6 },
+      { playerName: 'David', victoryPoints: 5 }
+    ];
+
+    const m = await matchService.createMatch(4, matchPlacements);
+
+    expect(m.placements[0].playerName).toBe('Alice');
+    expect(m.placements[0].place).toBe(1);
+    expect(m.placements[0].victoryPoints).toBe(10);
+    expect(m.placements[0].playerId).toBeDefined();
+
+    expect(m.placements[1].playerName).toBe('Bob');
+    expect(m.placements[1].place).toBe(2);
+    expect(m.placements[1].victoryPoints).toBe(8);
+
+    expect(m.placements[2].playerName).toBe('Charlie');
+    expect(m.placements[2].place).toBe(3);
+
+    expect(m.placements[3].playerName).toBe('David');
+    expect(m.placements[3].place).toBe(4);
+
+    const tiePlacements = [
+      { playerName: 'Bob', victoryPoints: 8 },
+      { playerName: 'David', victoryPoints: 7 },
+      { playerName: 'Alice', victoryPoints: 10 },
+      { playerName: 'Charlie', victoryPoints: 8 }
+    ];
+
+    const m2 = await matchService.createMatch(4, tiePlacements);
+    const alice = m2.placements.find(p => p.playerName === 'Alice');
+    const bob = m2.placements.find(p => p.playerName === 'Bob');
+    const charlie = m2.placements.find(p => p.playerName === 'Charlie');
+    const david = m2.placements.find(p => p.playerName === 'David');
+
+    expect(alice.place).toBe(1);
+    expect(bob.place).toBe(2);
+    expect(charlie.place).toBe(2);
+    expect(david.place).toBe(4);
+  });
 });

@@ -136,6 +136,64 @@ const crownService = {
     return await db.queryItems({
       query: "SELECT * FROM c WHERE c.partitionKey = 'CROWN'"
     });
+  },  async resolvePlacement(p, idx, players, division) {
+    if (typeof p === 'string') {
+      const trimmedName = p.trim();
+      let player = players.find(pl => pl.name.toLowerCase() === trimmedName.toLowerCase());
+      if (!player) {
+        player = {
+          id: `player_${uuidv4()}`,
+          partitionKey: 'PLAYER',
+          type: 'player',
+          name: trimmedName,
+          createdAt: new Date().toISOString()
+        };
+        await db.createItem(player);
+        players.push(player);
+      }
+      return {
+        playerId: player.id,
+        playerName: player.name,
+        victoryPoints: idx === 0 ? 10 : (idx === 1 ? 8 : (idx === 2 ? 7 : (idx === 3 ? 6 : (idx === 4 ? 5 : 4)))),
+        place: idx + 1,
+        settlements: null,
+        cities: null,
+        metropolis: null,
+        longestRoad: null
+      };
+    }
+
+    const resolved = { ...p };
+    if (!resolved.playerId && resolved.playerName) {
+      const trimmedName = resolved.playerName.trim();
+      let player = players.find(pl => pl.name.toLowerCase() === trimmedName.toLowerCase());
+      if (!player) {
+        player = {
+          id: `player_${uuidv4()}`,
+          partitionKey: 'PLAYER',
+          type: 'player',
+          name: trimmedName,
+          createdAt: new Date().toISOString()
+        };
+        await db.createItem(player);
+        players.push(player);
+      }
+      resolved.playerId = player.id;
+      resolved.playerName = player.name;
+    }
+
+    let vp = parseInt(resolved.victoryPoints, 10);
+    if (isNaN(vp)) {
+      vp = idx === 0 ? 10 : (idx === 1 ? 8 : (idx === 2 ? 7 : (idx === 3 ? 6 : (idx === 4 ? 5 : 4))));
+    }
+    resolved.victoryPoints = vp;
+
+    resolved.settlements = resolved.settlements !== undefined ? resolved.settlements : null;
+    resolved.cities = resolved.cities !== undefined ? resolved.cities : null;
+    resolved.metropolis = resolved.metropolis !== undefined ? resolved.metropolis : null;
+    resolved.longestRoad = resolved.longestRoad !== undefined ? resolved.longestRoad : null;
+
+    return resolved;
   },
 
   async rebuildCrownTimeline() {
@@ -155,19 +213,33 @@ const crownService = {
     });
     matches.sort((a, b) => new Date(a.playedAt) - new Date(b.playedAt));
 
+    const players = await db.queryItems({
+      query: "SELECT * FROM c WHERE c.partitionKey = 'PLAYER' AND c.type = 'player'"
+    });
+
     // 3. Re-process matches in order
     for (const match of matches) {
-      let winner = match.placements.find(p => p.place === 1);
-      if (!winner) {
-        // Auto-fix placements by sorting them by victory points descending
-        match.placements.sort((a, b) => (b.victoryPoints || 0) - (a.victoryPoints || 0));
+      let needsFix = match.placements.some(p => typeof p === 'string' || !p.playerId || p.place === undefined || p.place === null);
+      if (!needsFix) {
+        // Double check winner has place === 1
+        const hasWinner = match.placements.some(p => p.place === 1);
+        if (!hasWinner) needsFix = true;
+      }
+
+      if (needsFix) {
+        const resolvedPlacements = [];
+        for (let idx = 0; idx < match.placements.length; idx++) {
+          resolvedPlacements.push(await this.resolvePlacement(match.placements[idx], idx, players, match.division));
+        }
+        resolvedPlacements.sort((a, b) => (b.victoryPoints || 0) - (a.victoryPoints || 0));
         let currentRank = 1;
-        match.placements.forEach((p, idx) => {
-          if (idx > 0 && (p.victoryPoints || 0) < (match.placements[idx - 1].victoryPoints || 0)) {
+        resolvedPlacements.forEach((p, idx) => {
+          if (idx > 0 && (p.victoryPoints || 0) < (resolvedPlacements[idx - 1].victoryPoints || 0)) {
             currentRank = idx + 1;
           }
           p.place = currentRank;
         });
+        match.placements = resolvedPlacements;
         await db.upsertItem(match);
       }
 
