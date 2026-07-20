@@ -32,6 +32,17 @@ app.get('/api/crowns', async (req, res) => {
   }
 });
 
+// Rebuild crown timeline from existing matches
+app.post('/api/crowns/rebuild', async (req, res) => {
+  try {
+    await crownService.rebuildCrownTimeline();
+    const crowns = await crownService.getCurrentCrowns();
+    res.json({ message: 'Crown timeline rebuilt successfully', crowns });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Fallback to single page app index
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
