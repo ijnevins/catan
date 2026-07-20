@@ -6,6 +6,7 @@ const crownService = {
     const crownStateId = `crown_division_${division}`;
     let crownState = await db.readItem(crownStateId, 'CROWN');
     const winner = placements.find(p => p.place === 1);
+    const interimHolderBefore = crownState ? crownState.interimHolderId : null;
 
     if (!winner) {
       throw new Error('Match placements must have a first-place winner (place = 1)');
@@ -49,7 +50,9 @@ const crownService = {
         crownChallenged: true,
         crownDefended: false,
         crownHolderBefore: null,
-        crownHolderAfter: winner.playerId
+        crownHolderAfter: winner.playerId,
+        interimHolderBefore,
+        interimHolderAfter: null
       };
     }
 
@@ -86,7 +89,9 @@ const crownService = {
           crownChallenged: true,
           crownDefended: true,
           crownHolderBefore: currentHolderId,
-          crownHolderAfter: currentHolderId
+          crownHolderAfter: currentHolderId,
+          interimHolderBefore,
+          interimHolderAfter: null
         };
       } else {
         const previousHolderId = currentHolderId;
@@ -134,7 +139,9 @@ const crownService = {
           crownChallenged: true,
           crownDefended: false,
           crownHolderBefore: previousHolderId,
-          crownHolderAfter: winner.playerId
+          crownHolderAfter: winner.playerId,
+          interimHolderBefore,
+          interimHolderAfter: null
         };
       }
     } else {
@@ -198,7 +205,9 @@ const crownService = {
             crownDefended: false,
             crownHolderBefore: previousHolderId,
             crownHolderAfter: winner.playerId,
-            interimPromotion: true
+            interimPromotion: true,
+            interimHolderBefore,
+            interimHolderAfter: null
           };
         } else {
           // Not promoted yet, just incrementing wins
@@ -208,7 +217,9 @@ const crownService = {
             crownDefended: false,
             crownHolderBefore: crownState.currentHolderId,
             crownHolderAfter: crownState.currentHolderId,
-            interimUpdated: true
+            interimUpdated: true,
+            interimHolderBefore,
+            interimHolderAfter: crownState.interimHolderId
           };
         }
       } else {
@@ -225,7 +236,9 @@ const crownService = {
           crownDefended: false,
           crownHolderBefore: crownState.currentHolderId,
           crownHolderAfter: crownState.currentHolderId,
-          interimUpdated: true
+          interimUpdated: true,
+          interimHolderBefore,
+          interimHolderAfter: crownState.interimHolderId
         };
       }
     }
@@ -338,10 +351,14 @@ const crownService = {
       const crownResult = await crownService.processMatchCrown(match.id, match.division, match.placements, match.playedAt);
       
       // Update match with new crown results
-      match.crownChallenged = crownResult.crownChallenged;
-      match.crownDefended = crownResult.crownDefended;
-      match.crownHolderBefore = crownResult.crownHolderBefore;
-      match.crownHolderAfter = crownResult.crownHolderAfter;
+      match.crownChallenged = crownResult ? crownResult.crownChallenged : false;
+      match.crownDefended = crownResult ? crownResult.crownDefended : false;
+      match.crownHolderBefore = crownResult ? crownResult.crownHolderBefore : null;
+      match.crownHolderAfter = crownResult ? crownResult.crownHolderAfter : null;
+      match.interimUpdated = crownResult ? !!crownResult.interimUpdated : false;
+      match.interimHolderBefore = crownResult ? crownResult.interimHolderBefore : null;
+      match.interimHolderAfter = crownResult ? crownResult.interimHolderAfter : null;
+      match.interimPromotion = crownResult ? !!crownResult.interimPromotion : false;
       
       await db.upsertItem(match);
     }

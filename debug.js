@@ -1,13 +1,16 @@
 const db = require('./src/db');
 require('dotenv').config();
 
-(async () => {
+async function debug() {
   await db.init();
-  const players = await db.queryItems({
-    query: "SELECT * FROM c WHERE c.partitionKey = 'PLAYER' AND c.type = 'player'"
+  const matches = await db.queryItems({
+    query: "SELECT * FROM c WHERE c.partitionKey = 'MATCH' AND c.type = 'match' AND c.division = 4"
   });
-  
-  const matiasPlayers = players.filter(p => p.name.toLowerCase() === 'matias');
-  console.log(JSON.stringify(matiasPlayers, null, 2));
-})();
+  matches.sort((a,b) => new Date(a.playedAt) - new Date(b.playedAt));
+  console.log('Total matches: ' + matches.length);
+  matches.forEach(m => {
+    console.log(`${m.playedAt} | Chal: ${m.crownChallenged} | Def: ${m.crownDefended} | Int: ${m.interimUpdated} | Name: ${m.placements[0]?.playerName}`);
+  });
+}
 
+debug().catch(console.error);

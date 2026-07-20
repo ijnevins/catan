@@ -33,6 +33,28 @@
       </div>
     </section>
 
+    <!-- THE LINEAGE VISUALIZER -->
+    <section class="catan-card lineage-box">
+      <h2 class="section-title">The Crown Lineage</h2>
+      <div class="division-tabs" id="lineageTabs">
+        <button class="tab-btn active" data-div="4">4-Player Crown</button>
+        <button class="tab-btn" data-div="5">5-Player Crown</button>
+        <button class="tab-btn" data-div="6">6-Player Belt</button>
+      </div>
+
+      <div class="lineage-container" id="lineageContainer">
+        <!-- SVG Canvas for Arrows -->
+        <svg id="lineageSvg" class="lineage-svg">
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="rgba(255, 255, 255, 0.7)" />
+            </marker>
+          </defs>
+        </svg>
+        <!-- Nodes will be injected here via JS -->
+      </div>
+    </section>
+
     <!-- LOG A MATCH SECTION -->
     <section class="catan-card log-box">
       <h2 class="section-title">Log a Match</h2>

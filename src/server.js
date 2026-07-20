@@ -33,6 +33,27 @@ app.get('/api/crowns', async (req, res) => {
 });
 
 // Rebuild crown timeline from existing matches
+app.get('/api/crowns/timeline/:division', async (req, res) => {
+  try {
+    const division = parseInt(req.params.division);
+    const matches = await db.queryItems({
+      query: "SELECT * FROM c WHERE c.partitionKey = 'MATCH' AND c.type = 'match' AND c.division = @division",
+      parameters: [{ name: '@division', value: division }]
+    });
+    
+    // Sort chronologically
+    matches.sort((a, b) => new Date(a.playedAt) - new Date(b.playedAt));
+    
+    // Filter only matches that affected the timeline (Real or Interim)
+    const timeline = matches.filter(m => m.crownChallenged || m.crownDefended || m.interimUpdated);
+    
+    res.json({ timeline });
+  } catch (err) {
+    console.error('Error fetching crown timeline:', err);
+    res.status(500).json({ error: 'Server error fetching crown timeline' });
+  }
+});
+
 app.post('/api/crowns/rebuild', async (req, res) => {
   try {
     await crownService.rebuildCrownTimeline();

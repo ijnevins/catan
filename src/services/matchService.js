@@ -46,10 +46,18 @@ const matchService = {
       id: matchId,
       partitionKey: 'MATCH',
       type: 'match',
-      division,
+      division: parseInt(division),
       playedAt: date,
+      placements: resolvedPlacements,
       isSimpleMatch: !!isSimpleMatch,
-      placements: resolvedPlacements
+      crownChallenged: false,
+      crownDefended: false,
+      crownHolderBefore: null,
+      crownHolderAfter: null,
+      interimUpdated: false,
+      interimHolderBefore: null,
+      interimHolderAfter: null,
+      interimPromotion: false
     };
 
     await db.createItem(match);
