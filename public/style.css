@@ -18,7 +18,7 @@
 }
 
 body {
-  background-color: #A81B1B;
+  background-color: #C1A35C;
   background-image: none;
   color: var(--color-ink);
   font-family: var(--font-tactile);
@@ -27,6 +27,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+  border: 48px solid #B3392C;
 }
 
 .tactile-header {
@@ -49,7 +52,7 @@ body {
 
 .tactile-header h1 {
   font-family: var(--font-header);
-  color: var(--color-clay);
+  color: #000000;
   font-size: 2.5rem;
   margin: 0 0 10px 0;
   text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
