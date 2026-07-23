@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('divisionSelect').addEventListener('change', setupDivisionSelect);
   document.getElementById('modeDetailed').addEventListener('change', setupDivisionSelect);
   document.getElementById('modeSimple').addEventListener('change', setupDivisionSelect);
-  document.getElementById('playerForm').addEventListener('submit', handlePlayerSubmit);
+  const playerForm = document.getElementById('playerForm');
+  if (playerForm) {
+    playerForm.addEventListener('submit', handlePlayerSubmit);
+  }
   document.getElementById('matchForm').addEventListener('submit', handleMatchSubmit);
 
   // Tab buttons
