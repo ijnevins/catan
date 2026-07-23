@@ -31,7 +31,7 @@ We need to clear emojis from all headers, buttons, cards, and add the layout con
   <body>
     <header class="tactile-header">
       <h1>CATAN LINEAL CHAMPIONSHIP</h1>
-      <p>Recording victors and settlement development in the Victor Almanac</p>
+      <p>The Catan Almanac of victors, settlements, and reigning champions</p>
     </header>
 
     <main class="dashboard-grid">
