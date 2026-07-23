@@ -419,34 +419,34 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
 
 /* Catan resource styles */
 .hex-wheat .hex-inner {
-  background-image: url('/images/wheat.png');
+  background-image: url('/images/hex-wheat-NEW.png');
   background-size: cover;
   background-position: center;
 }
 
 .hex-forest .hex-inner {
-  background-image: url('/images/forest.png');
+  background-image: url('/images/hex-wood-NEW.png');
   background-size: cover;
   background-position: center;
   color: #fff;
 }
 
 .hex-clay .hex-inner {
-  background-image: url('/images/clay.png');
+  background-image: url('/images/hex-brick-NEW.png');
   background-size: cover;
   background-position: center;
   color: #fff;
 }
 
 .hex-ore .hex-inner {
-  background-image: url('/images/ore.png');
+  background-image: url('/images/hex-oar-NEW.png');
   background-size: cover;
   background-position: center;
   color: #fff;
 }
 
 .hex-pasture .hex-inner {
-  background-image: url('/images/pasture.png');
+  background-image: url('/images/hex-sheep-NEW.png');
   background-size: cover;
   background-position: center;
 }
@@ -458,7 +458,7 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
 }
 
 .hex-desert .hex-inner {
-  background-image: url('/images/desert.png');
+  background-image: url('/images/hex-dessert-NEW.png');
   background-size: cover;
   background-position: center;
 }

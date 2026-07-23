@@ -467,10 +467,10 @@ function renderHexBoard(players) {
         p.tieRank = currentTieRank;
       });
 
-      const hexWidth = 120;
-      const hexHeight = 104;
-      const renderWidth = 124;
-      const renderHeight = 108;
+      const hexWidth = 160;
+      const renderWidth = 160;
+      const hexHeight = Math.round(hexWidth * 0.866);
+      const renderHeight = hexHeight;
 
       const neighborDirs = [
         { q: 1, r: -1 }, { q: 1, r: 0 }, { q: 0, r: 1 },
@@ -513,8 +513,8 @@ function renderHexBoard(players) {
       let minY = Infinity, maxY = -Infinity;
 
       allHexes.forEach(h => {
-        h.x = h.q * (hexWidth * 0.73);
-        h.y = (h.r * (hexHeight * 0.975)) + (h.q * ((hexHeight * 0.975) / 2));
+        h.x = h.q * (hexWidth * 0.75);
+        h.y = (h.r * hexHeight) + (h.q * (hexHeight / 2));
 
         if (h.x < minX) minX = h.x;
         if (h.x > maxX) maxX = h.x;
