@@ -525,7 +525,7 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
 }
 
 .hex-water .hex-inner {
-  background-image: url('/images/water.png');
+  background-image: url('/images/hex-water-NEW.png');
   background-size: cover;
   background-position: center;
 }
