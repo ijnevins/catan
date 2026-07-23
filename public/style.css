@@ -18,18 +18,23 @@
 }
 
 body {
-  background-color: #C1A35C;
-  background-image: none;
+  background-color: #A81B1B;
+  background-image:
+    linear-gradient(to bottom, #A81B1B 0%, #A81B1B 20%, rgba(168, 27, 27, 0.6) 50%, rgba(168, 27, 27, 0) 100%),
+    url('images/catan-box.pdf.png');
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% auto;
+  background-attachment: scroll;
   color: var(--color-ink);
   font-family: var(--font-tactile);
   margin: 0;
-  padding: 20px;
+  padding: 20px 20px max(550px, 55vw) 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
   box-sizing: border-box;
-  border: 48px solid #B3392C;
 }
 
 .tactile-header {
