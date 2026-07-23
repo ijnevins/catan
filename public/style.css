@@ -74,8 +74,14 @@ body {
 /* Specific styles representing Catan components */
 .board-box {
   grid-column: 1 / -1;
-  background-color: #dfd7c2;
-  border-color: var(--color-wood);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.board-box .section-title {
+  color: #dfd7c2;
+  border-bottom-color: #dfd7c2;
 }
 
 .stats-box {
@@ -124,13 +130,7 @@ body {
   width: 100%;
   height: auto;
   display: block;
-  transition: transform 0.25s ease, filter 0.25s ease;
   filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35));
-}
-
-.crown-badge:hover .scroll-img {
-  transform: translateY(-4px) scale(1.03);
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.45));
 }
 
 .crown-badge .scroll-content {
@@ -382,13 +382,7 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
 .catan-hex {
   position: absolute;
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  transition: transform 0.2s;
   user-select: none;
-}
-
-.catan-hex:hover {
-  transform: scale(1.05);
-  z-index: 10;
 }
 
 /* Inner wrapper */

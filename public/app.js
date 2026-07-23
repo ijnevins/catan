@@ -241,7 +241,7 @@ async function renderCrownsAndLineage() {
           <img src="images/scroll.webp" alt="Scroll" class="scroll-img">
           <div class="scroll-content">
             <span class="crown-icon">👑</span>
-            <h3>${div}-Player ${div === 6 ? 'Belt' : 'Crown'}</h3>
+            <h3>${div}-Player Victor</h3>
             <div class="holder-name">${escapeHtml(crown.currentHolderName)}</div>
             <div class="defenses-info">⚔️ ${crown.defensesCount} Defense${crown.defensesCount !== 1 ? 's' : ''}</div>
           </div>
@@ -255,7 +255,7 @@ async function renderCrownsAndLineage() {
             <img src="images/scroll.webp" alt="Scroll" class="scroll-img">
             <div class="scroll-content">
               <span class="crown-icon">⚔️</span>
-              <h3>${div}-Player INTERIM</h3>
+              <h3>${div}-Player Victor INTERIM</h3>
               <div class="holder-name interim-text">${escapeHtml(crown.interimHolderName)}</div>
               <div class="defenses-info">🏆 ${crown.interimConsecutiveWins} Consecutive Win${crown.interimConsecutiveWins !== 1 ? 's' : ''}</div>
             </div>
@@ -267,7 +267,7 @@ async function renderCrownsAndLineage() {
           <img src="images/scroll.webp" alt="Scroll" class="scroll-img">
           <div class="scroll-content">
             <span class="crown-icon">🏰</span>
-            <h3>${div}-Player ${div === 6 ? 'Belt' : 'Crown'}</h3>
+            <h3>${div}-Player Victor</h3>
             <div class="holder-name vacant-text">Vacant</div>
             <div class="defenses-info">No champion crowned yet</div>
           </div>
