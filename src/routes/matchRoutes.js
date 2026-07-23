@@ -21,14 +21,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
-  try {
-    const { division, placements, playedAt, isSimpleMatch } = req.body;
-    const match = await matchService.updateMatch(req.params.id, parseInt(division, 10), placements, playedAt, isSimpleMatch);
-    res.json(match);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
 module.exports = router;

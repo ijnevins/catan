@@ -38,15 +38,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('playerForm').addEventListener('submit', handlePlayerSubmit);
   document.getElementById('matchForm').addEventListener('submit', handleMatchSubmit);
 
-  // Edit Match Event Listeners
-  document.getElementById('editDivisionSelect')?.addEventListener('change', setupEditDivisionSelect);
-  document.getElementById('editModeDetailed')?.addEventListener('change', setupEditDivisionSelect);
-  document.getElementById('editModeSimple')?.addEventListener('change', setupEditDivisionSelect);
-  document.getElementById('editMatchForm')?.addEventListener('submit', handleEditMatchSubmit);
-  document.getElementById('closeEditMatchBtn')?.addEventListener('click', () => {
-    document.getElementById('editMatchModal').style.display = 'none';
-  });
-
   // Tab buttons
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -593,7 +584,7 @@ function renderHexBoard(players) {
 async function renderMatchHistory() {
   const tbody = document.getElementById('matchHistoryBody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="5">Loading match history...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="4">Loading match history...</td></tr>';
 
   try {
     const res = await fetch('/api/matches');
@@ -601,7 +592,7 @@ async function renderMatchHistory() {
 
     tbody.innerHTML = '';
     if (!matches || matches.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5">No matches played yet.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4">No matches played yet.</td></tr>';
       return;
     }
 
@@ -638,254 +629,11 @@ async function renderMatchHistory() {
         <td>${match.division}-Player</td>
         <td><strong>${escapeHtml(winnerName)}</strong></td>
         <td style="text-align: left;"><small>${placementsStr}</small></td>
-        <td><button class="retro-btn btn-secondary edit-match-btn" style="padding: 4px 8px; font-size: 0.85rem;" data-id="${match.id}">✏️ Edit</button></td>
       `;
-
-      tr.querySelector('.edit-match-btn').addEventListener('click', () => {
-        openEditMatchModal(match);
-      });
-
       tbody.appendChild(tr);
     });
   } catch (err) {
-    tbody.innerHTML = '<tr><td colspan="5">Error loading match history.</td></tr>';
-  }
-}
-
-function setupEditDivisionSelect() {
-  const div = parseInt(document.getElementById('editDivisionSelect').value, 10);
-  const container = document.getElementById('editPlacementInputsContainer');
-  const isSimpleMode = document.getElementById('editModeSimple').checked;
-  container.innerHTML = '';
-
-  const header = document.createElement('div');
-  header.className = 'placement-header';
-  
-  if (isSimpleMode) {
-    header.innerHTML = `
-      <span>Role</span>
-      <span>Player</span>
-    `;
-    header.style.gridTemplateColumns = "1fr 2fr";
-  } else {
-    header.innerHTML = `
-      <span>Player</span>
-      <span title="Victory Points">VP</span>
-      <span title="Settlements">Settlements</span>
-      <span title="Cities">Cities</span>
-      <span title="Metropolis">Metro</span>
-      <span title="Longest Road">Road</span>
-    `;
-    header.style.gridTemplateColumns = "";
-  }
-  container.appendChild(header);
-
-  for (let i = 1; i <= div; i++) {
-    const row = document.createElement('div');
-    row.className = 'placement-row';
-    
-    if (isSimpleMode) {
-      row.style.gridTemplateColumns = "1fr 2fr";
-      const roleLabel = document.createElement('div');
-      roleLabel.className = 'rank-label';
-      roleLabel.innerText = i === 1 ? '👑 Winner' : 'Participant';
-      row.appendChild(roleLabel);
-    } else {
-      row.style.gridTemplateColumns = "";
-    }
-
-    const playerSelect = document.createElement('select');
-    playerSelect.className = 'player-select';
-    playerSelect.required = true;
-    playerSelect.innerHTML = `<option value="">-- Player --</option>` +
-      playersList.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-    row.appendChild(playerSelect);
-
-    if (!isSimpleMode) {
-      const vpInput = document.createElement('input');
-      vpInput.type = 'number';
-      vpInput.placeholder = 'VP';
-      vpInput.required = true;
-      vpInput.min = '0';
-      vpInput.max = '15';
-      vpInput.className = 'vp-input';
-
-      const settlementsInput = document.createElement('input');
-      settlementsInput.type = 'number';
-      settlementsInput.placeholder = 'Set';
-      settlementsInput.min = '0';
-      settlementsInput.max = '5';
-      settlementsInput.className = 'settlements-input';
-
-      const citiesInput = document.createElement('input');
-      citiesInput.type = 'number';
-      citiesInput.placeholder = 'City';
-      citiesInput.min = '0';
-      citiesInput.max = '4';
-      citiesInput.className = 'cities-input';
-
-      const metropolisInput = document.createElement('input');
-      metropolisInput.type = 'number';
-      metropolisInput.placeholder = 'Metro';
-      metropolisInput.min = '0';
-      metropolisInput.max = '3';
-      metropolisInput.className = 'metropolis-input';
-
-      const longestRoadCheckbox = document.createElement('input');
-      longestRoadCheckbox.type = 'checkbox';
-      longestRoadCheckbox.className = 'longest-road-checkbox';
-
-      row.appendChild(vpInput);
-      row.appendChild(settlementsInput);
-      row.appendChild(citiesInput);
-      row.appendChild(metropolisInput);
-      row.appendChild(longestRoadCheckbox);
-    }
-    
-    container.appendChild(row);
-  }
-}
-
-function openEditMatchModal(match) {
-  document.getElementById('editMatchId').value = match.id;
-  document.getElementById('editDivisionSelect').value = match.division;
-  
-  if (match.isSimpleMatch) {
-    document.getElementById('editModeSimple').checked = true;
-  } else {
-    document.getElementById('editModeDetailed').checked = true;
-  }
-
-  setupEditDivisionSelect();
-
-  const sortedPlacements = [...match.placements].sort((a, b) => a.place - b.place);
-  const rows = document.querySelectorAll('#editPlacementInputsContainer .placement-row');
-
-  for (let i = 0; i < rows.length && i < sortedPlacements.length; i++) {
-    const p = sortedPlacements[i];
-    const select = rows[i].querySelector('.player-select');
-    if (select) select.value = p.playerId;
-
-    if (!match.isSimpleMatch) {
-      const vpInput = rows[i].querySelector('.vp-input');
-      const setInput = rows[i].querySelector('.settlements-input');
-      const cityInput = rows[i].querySelector('.cities-input');
-      const metroInput = rows[i].querySelector('.metropolis-input');
-      const roadCheckbox = rows[i].querySelector('.longest-road-checkbox');
-
-      if (vpInput) vpInput.value = p.victoryPoints !== null && p.victoryPoints !== undefined ? p.victoryPoints : (p.place === 1 ? 13 : '');
-      if (setInput) setInput.value = p.settlements !== null && p.settlements !== undefined ? p.settlements : '';
-      if (cityInput) cityInput.value = p.cities !== null && p.cities !== undefined ? p.cities : '';
-      if (metroInput) metroInput.value = p.metropolis !== null && p.metropolis !== undefined ? p.metropolis : '';
-      if (roadCheckbox) roadCheckbox.checked = !!p.longestRoad;
-    }
-  }
-
-  const dateInput = document.getElementById('editMatchDate');
-  if (dateInput && match.playedAt) {
-    const d = new Date(match.playedAt);
-    const localIso = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
-    dateInput.value = localIso;
-  }
-
-  document.getElementById('editMatchModal').style.display = 'flex';
-}
-
-async function handleEditMatchSubmit(e) {
-  e.preventDefault();
-  const matchId = document.getElementById('editMatchId').value;
-  const division = parseInt(document.getElementById('editDivisionSelect').value, 10);
-  const rows = document.querySelectorAll('#editPlacementInputsContainer .placement-row');
-  const placements = [];
-  const chosenPlayerIds = new Set();
-  const isSimpleMatch = document.getElementById('editModeSimple').checked;
-
-  for (let i = 0; i < rows.length; i++) {
-    const select = rows[i].querySelector('.player-select');
-    const playerId = select.value;
-    const playerName = select.options[select.selectedIndex].text;
-
-    if (!playerId) {
-      alert('Please assign a player to all placements');
-      return;
-    }
-    if (chosenPlayerIds.has(playerId)) {
-      alert('Each player can only be assigned to one placement per match');
-      return;
-    }
-    chosenPlayerIds.add(playerId);
-
-    if (isSimpleMatch) {
-      placements.push({
-        playerId,
-        playerName,
-        place: i === 0 ? 1 : 2,
-        victoryPoints: i === 0 ? 13 : null,
-        settlements: null,
-        cities: null,
-        metropolis: null,
-        longestRoad: null
-      });
-    } else {
-      const vpVal = rows[i].querySelector('.vp-input').value;
-      const settlementsVal = rows[i].querySelector('.settlements-input').value;
-      const citiesVal = rows[i].querySelector('.cities-input').value;
-      const metropolisVal = rows[i].querySelector('.metropolis-input').value;
-      const longestRoadChecked = rows[i].querySelector('.longest-road-checkbox').checked;
-      
-      const hasStats = settlementsVal !== '' || citiesVal !== '' || metropolisVal !== '';
-
-      placements.push({
-        playerId,
-        playerName,
-        victoryPoints: vpVal !== '' ? parseInt(vpVal, 10) : (i === 0 ? 13 : null),
-        settlements: hasStats ? (parseInt(settlementsVal, 10) || 0) : null,
-        cities: hasStats ? (parseInt(citiesVal, 10) || 0) : null,
-        metropolis: hasStats ? (parseInt(metropolisVal, 10) || 0) : null,
-        longestRoad: hasStats ? longestRoadChecked : null
-      });
-    }
-  }
-
-  if (!isSimpleMatch) {
-    placements.sort((a, b) => b.victoryPoints - a.victoryPoints);
-
-    let currentRank = 1;
-    placements.forEach((p, idx) => {
-      if (idx > 0 && p.victoryPoints < placements[idx - 1].victoryPoints) {
-        currentRank = idx + 1;
-      }
-      p.place = currentRank;
-    });
-  }
-
-  const dateVal = document.getElementById('editMatchDate').value;
-  let playedAt;
-  if (dateVal) {
-    if (dateVal.includes('T')) {
-      playedAt = new Date(dateVal).toISOString();
-    } else {
-      playedAt = new Date(dateVal + 'T12:00:00Z').toISOString();
-    }
-  }
-
-  try {
-    const res = await fetch(`/api/matches/${matchId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ division, placements, playedAt, isSimpleMatch })
-    });
-
-    if (!res.ok) {
-      const errData = await res.json();
-      alert(errData.error || 'Failed to update match');
-      return;
-    }
-
-    document.getElementById('editMatchModal').style.display = 'none';
-    await updateDashboard();
-  } catch (err) {
-    alert('Error updating match');
+    tbody.innerHTML = '<tr><td colspan="4">Error loading match history.</td></tr>';
   }
 }
 

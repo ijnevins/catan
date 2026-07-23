@@ -129,24 +129,4 @@ describe('Crown and Match Service', () => {
     expect(charlie.place).toBe(2);
     expect(david.place).toBe(4);
   });
-
-  test('should allow updating an existing match record and rebuild timeline', async () => {
-    const original = await matchService.createMatch(4, [
-      { playerName: 'PlayerA', victoryPoints: 10 },
-      { playerName: 'PlayerB', victoryPoints: 8 },
-      { playerName: 'PlayerC', victoryPoints: 6 },
-      { playerName: 'PlayerD', victoryPoints: 4 }
-    ]);
-
-    const updated = await matchService.updateMatch(original.id, 4, [
-      { playerName: 'PlayerB', victoryPoints: 12 },
-      { playerName: 'PlayerA', victoryPoints: 9 },
-      { playerName: 'PlayerC', victoryPoints: 6 },
-      { playerName: 'PlayerD', victoryPoints: 4 }
-    ]);
-
-    expect(updated.id).toBe(original.id);
-    const winner = updated.placements.find(p => p.place === 1);
-    expect(winner.playerName).toBe('PlayerB');
-  });
 });
