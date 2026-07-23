@@ -11,7 +11,7 @@
   --color-border: #7A1A1A;
   --color-red: #C0392B;
   --color-gold: #E8A817;
-  
+
   --font-header: 'Minion Pro', 'Minion', serif;
   --font-tactile: 'Minion Pro', 'Minion', serif;
   --font-data: 'Minion Pro', 'Minion', serif;
@@ -52,7 +52,7 @@ body {
   color: var(--color-parchment);
   font-size: 1.1rem;
   margin: 10px 0 0 0;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .tactile-header h1 {
@@ -60,7 +60,7 @@ body {
   color: #000000;
   font-size: 2.5rem;
   margin: 0 0 10px 0;
-  text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);
 }
 
 .dashboard-grid {
@@ -147,13 +147,14 @@ body {
 }
 
 .page-tab-btn:hover {
-  background-color: #f0e6c8;
+  background-color: #2e4a9e;
+  color: #ffffff;
 }
 
 .page-tab-btn.active {
-  background-color: var(--color-wheat);
-  color: var(--color-ink);
-  border-bottom-color: var(--color-wheat);
+  background-color: #233C8A;
+  color: #ffffff;
+  border-bottom-color: #233C8A;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -218,7 +219,7 @@ body {
   width: 100%;
   height: auto;
   display: block;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.35));
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
 }
 
 .crown-badge .scroll-content {
@@ -241,7 +242,7 @@ body {
   font-weight: 900;
   color: var(--color-clay);
   font-size: 1.1rem;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   letter-spacing: 0.5px;
 }
 
@@ -249,21 +250,21 @@ body {
   max-width: 400px;
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .crown-badge .crown-icon {
   font-size: 1.8rem;
   margin-bottom: 2px;
   display: block;
-  filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 .crown-badge .holder-name {
   font-size: 1.3rem;
   font-weight: 900;
   color: var(--color-ink);
-  text-shadow: 1px 1px 0px rgba(245,242,235,0.6);
+  text-shadow: 1px 1px 0px rgba(245, 242, 235, 0.6);
   margin-bottom: 4px;
 }
 
@@ -292,7 +293,11 @@ label {
   color: var(--color-wood);
 }
 
-select, input[type="text"], input[type="password"], input[type="date"], input[type="number"] {
+select,
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="number"] {
   background-color: #fff;
   border: 3px solid var(--color-border);
   padding: 8px;
@@ -304,11 +309,16 @@ select, input[type="text"], input[type="password"], input[type="date"], input[ty
   box-sizing: border-box;
 }
 
-select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus, input[type="date"]:focus {
+select:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
   border-color: var(--color-clay);
 }
 
-.placement-header, .placement-row {
+.placement-header,
+.placement-row {
   display: grid;
   grid-template-columns: 2.5fr 1fr 1.8fr 1.3fr 1fr 1fr;
   align-items: center;
@@ -379,9 +389,14 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
   border-radius: 0;
 }
 
-.tab-btn.active {
-  background-color: var(--color-wheat);
+.tab-btn:hover {
+  background-color: #2e4a9e;
+  color: #ffffff;
+}
 
+.tab-btn.active {
+  background-color: #233C8A;
+  color: #ffffff;
 }
 
 .table-container {
@@ -397,7 +412,8 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
   background-color: #fff;
 }
 
-.retro-table th, .retro-table td {
+.retro-table th,
+.retro-table td {
   border: 2px solid var(--color-border);
   padding: 12px;
   text-align: left;
@@ -493,46 +509,46 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
 /* Catan resource styles */
 .hex-wheat .hex-inner {
   background-image: url('/images/hex-wheat-NEW.png');
-  background-size: cover;
+  background-size: 125%;
   background-position: center;
 }
 
 .hex-forest .hex-inner {
   background-image: url('/images/hex-wood-NEW.png');
-  background-size: cover;
+  background-size: 125%;
   background-position: center;
   color: #fff;
 }
 
 .hex-clay .hex-inner {
   background-image: url('/images/hex-brick-NEW.png');
-  background-size: cover;
+  background-size: 125%;
   background-position: center;
   color: #fff;
 }
 
 .hex-ore .hex-inner {
   background-image: url('/images/hex-oar-NEW.png');
-  background-size: cover;
+  background-size: 125%;
   background-position: center;
   color: #fff;
 }
 
 .hex-pasture .hex-inner {
   background-image: url('/images/hex-sheep-NEW.png');
-  background-size: cover;
+  background-size: 125%;
   background-position: center;
 }
 
 .hex-water .hex-inner {
   background-image: url('/images/hex-water-NEW.png');
-  background-size: cover;
+  background-size: 125%;
   background-position: center;
 }
 
 .hex-desert .hex-inner {
   background-image: url('/images/hex-dessert-NEW.png');
-  background-size: cover;
+  background-size: 125%;
   background-position: center;
 }
 
@@ -546,7 +562,7 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 /* Circular physical Catan number token disk */
@@ -560,7 +576,7 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.7);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.7);
   margin-top: 4px;
   box-sizing: border-box;
 }
@@ -596,7 +612,7 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
 
 .token-desert .wins-number {
   font-size: 1.3rem;
-  color: rgba(0,0,0,0.4);
+  color: rgba(0, 0, 0, 0.4);
 }
 
 .token-desert .wins-label {
@@ -613,6 +629,7 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
   align-items: center;
   font-family: var(--font-data);
 }
+
 .mode-toggle-options input[type="radio"] {
   width: auto;
   margin-right: 5px;
@@ -620,11 +637,13 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
 
 .interim-badge .crown-icon {
   font-size: 2rem;
-  filter: grayscale(100%) brightness(1.5); /* Silver look */
+  filter: grayscale(100%) brightness(1.5);
+  /* Silver look */
 }
 
 .interim-text {
-  color: #a8b2c1 !important; /* Silver text */
+  color: #a8b2c1 !important;
+  /* Silver text */
   text-shadow: 0 0 5px rgba(168, 178, 193, 0.4);
 }
 
@@ -831,10 +850,12 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
     align-items: stretch;
     gap: 15px;
   }
+
   .gallery-form .or-divider-group {
     padding-bottom: 0;
     margin: 5px 0;
   }
+
   .gallery-slider {
     height: 280px;
   }
@@ -1048,7 +1069,7 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
   background: linear-gradient(180deg, #1a3a5c 0%, #0d2240 40%, #162d4a 100%);
   border-radius: 8px;
   margin-top: 20px;
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
 }
 
 .lineage-svg {
@@ -1081,39 +1102,42 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
 .lineage-node .piece-img {
   width: 60px;
   height: auto;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7));
   transition: filter 0.2s ease;
 }
 
 .lineage-node:hover .piece-img {
-  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.9));
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.9));
 }
 
 /* City piece for full champion */
 .node-main .piece-img {
   width: 65px;
-  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5)) drop-shadow(0 4px 8px rgba(0,0,0,0.7));
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7));
 }
 
 /* Settlement piece for interim */
 .node-interim .piece-img {
   width: 55px;
-  filter: drop-shadow(0 0 6px rgba(192, 192, 192, 0.4)) drop-shadow(0 4px 8px rgba(0,0,0,0.7));
+  filter: drop-shadow(0 0 6px rgba(192, 192, 192, 0.4)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7));
 }
 
 /* Unification: city with golden pulsing glow */
 .node-unification .piece-img {
   width: 70px;
-  filter: drop-shadow(0 0 12px rgba(255, 69, 0, 0.7)) drop-shadow(0 0 25px rgba(255, 200, 0, 0.5)) drop-shadow(0 4px 10px rgba(0,0,0,0.7));
+  filter: drop-shadow(0 0 12px rgba(255, 69, 0, 0.7)) drop-shadow(0 0 25px rgba(255, 200, 0, 0.5)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
   animation: unification-pulse 2s ease-in-out infinite;
 }
 
 @keyframes unification-pulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 12px rgba(255, 69, 0, 0.7)) drop-shadow(0 0 25px rgba(255, 200, 0, 0.5)) drop-shadow(0 4px 10px rgba(0,0,0,0.7));
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 12px rgba(255, 69, 0, 0.7)) drop-shadow(0 0 25px rgba(255, 200, 0, 0.5)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
   }
+
   50% {
-    filter: drop-shadow(0 0 20px rgba(255, 69, 0, 0.9)) drop-shadow(0 0 40px rgba(255, 200, 0, 0.8)) drop-shadow(0 4px 10px rgba(0,0,0,0.7));
+    filter: drop-shadow(0 0 20px rgba(255, 69, 0, 0.9)) drop-shadow(0 0 40px rgba(255, 200, 0, 0.8)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
   }
 }
 
@@ -1127,7 +1151,7 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
   padding: 2px 6px;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 4px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .node-date {
@@ -1148,11 +1172,10 @@ select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type
   display: block;
   height: 16px;
   width: auto;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
 
 /* Hide the SVG arrows — we use road PNGs now */
 .lineage-path {
   display: none;
 }
-

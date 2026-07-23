@@ -88,7 +88,7 @@ function setupDivisionSelect() {
 
   const header = document.createElement('div');
   header.className = 'placement-header';
-  
+
   if (isSimpleMode) {
     header.innerHTML = `
       <span>Role</span>
@@ -111,7 +111,7 @@ function setupDivisionSelect() {
   for (let i = 1; i <= div; i++) {
     const row = document.createElement('div');
     row.className = 'placement-row';
-    
+
     if (isSimpleMode) {
       row.style.gridTemplateColumns = "1fr 2fr";
       const roleLabel = document.createElement('div');
@@ -169,7 +169,7 @@ function setupDivisionSelect() {
       row.appendChild(metropolisInput);
       row.appendChild(longestRoadCheckbox);
     }
-    
+
     container.appendChild(row);
   }
 }
@@ -392,7 +392,7 @@ async function handleMatchSubmit(e) {
       const citiesVal = rows[i].querySelector('.cities-input').value;
       const metropolisVal = rows[i].querySelector('.metropolis-input').value;
       const longestRoadChecked = rows[i].querySelector('.longest-road-checkbox').checked;
-      
+
       const hasStats = settlementsVal !== '' || citiesVal !== '' || metropolisVal !== '';
 
       placements.push({
@@ -481,8 +481,8 @@ function renderHexBoard(players) {
       });
 
       const hexWidth = 160;
-      const renderWidth = 160;
-      const hexHeight = Math.round(hexWidth * 0.866);
+      const hexHeight = hexWidth * (Math.sqrt(3) / 2);
+      const renderWidth = hexWidth;
       const renderHeight = hexHeight;
 
       const neighborDirs = [
@@ -525,9 +525,12 @@ function renderHexBoard(players) {
       let minX = Infinity, maxX = -Infinity;
       let minY = Infinity, maxY = -Infinity;
 
+      const colStep = hexWidth * 0.748; // Slight tightening for seamless touch without subpixel gap
+      const rowStep = hexHeight * 0.998;
+
       allHexes.forEach(h => {
-        h.x = h.q * (hexWidth * 0.75);
-        h.y = (h.r * hexHeight) + (h.q * (hexHeight / 2));
+        h.x = h.q * colStep;
+        h.y = (h.r * rowStep) + (h.q * (rowStep / 2));
 
         if (h.x < minX) minX = h.x;
         if (h.x > maxX) maxX = h.x;
@@ -617,7 +620,7 @@ async function renderMatchHistory() {
 
     matches.forEach(match => {
       const tr = document.createElement('tr');
-      
+
       const dateStr = new Date(match.playedAt).toLocaleDateString('en-US', {
         year: 'numeric', month: 'short', day: 'numeric'
       });
@@ -690,14 +693,14 @@ async function initGallery() {
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const fileInput = document.getElementById('galleryFileInput');
       const dateInput = document.getElementById('galleryDateInput');
       const descInput = document.getElementById('galleryDescInput');
       const submitBtn = form.querySelector('button[type="submit"]');
 
       let imageSource = '';
-      
+
       if (fileInput.files.length > 0) {
         // Read file as base64
         try {
@@ -739,9 +742,9 @@ async function initGallery() {
         form.reset();
         if (fileLabel) fileLabel.innerText = 'No file chosen';
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
-        
+
         await fetchGalleryImages();
-        
+
         // Show the newly added slide (which is sorted by date)
         const newIdx = galleryImages.findIndex(img => img.id === newImage.id);
         if (newIdx !== -1) {
@@ -796,7 +799,7 @@ function navigateSlider(direction) {
 function showSlide(index) {
   if (galleryImages.length === 0) return;
   currentSlideIndex = index;
-  
+
   // Update slides
   const slides = document.querySelectorAll('.gallery-slide');
   slides.forEach((slide, idx) => {
@@ -843,7 +846,7 @@ function renderSlider() {
   galleryImages.forEach((img, idx) => {
     const slide = document.createElement('div');
     slide.className = `gallery-slide ${idx === currentSlideIndex ? 'active' : ''}`;
-    
+
     // Format Date (YYYY-MM-DD to friendly string)
     let friendlyDate = img.date;
     try {
@@ -1136,7 +1139,7 @@ async function handleTilePreferenceChange(e) {
   try {
     const res = await fetch('/api/auth/profile/tile', {
       method: 'PUT',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
@@ -1209,16 +1212,16 @@ async function renderLineage(division) {
     const leftMainX = '25%';
     const centerMainX = '50%';
     const rightMainX = '75%';
-    const interimX = '85%'; 
-    const mainWithInterimX = '15%'; 
+    const interimX = '85%';
+    const mainWithInterimX = '15%';
 
     const nodes = [];
     const connections = [];
 
     let lastMainNode = null;
     let lastInterimNode = null;
-    let snakePos = 0; 
-    
+    let snakePos = 0;
+
     timeline.forEach((match) => {
       const hasInterimState = match.interimUpdated || match.interimHolderAfter;
       const isUnification = match.interimHolderBefore && !match.interimHolderAfter && match.crownChallenged;
@@ -1228,18 +1231,18 @@ async function renderLineage(division) {
         mainNode = document.createElement('div');
         mainNode.className = 'lineage-node ' + (isUnification ? 'node-unification' : 'node-main');
         mainNode.dataset.id = 'main_' + match.id;
-        
-        const dateStr = new Date(match.playedAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'});
+
+        const dateStr = new Date(match.playedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
         const hp = match.placements.find(p => p.playerId === match.crownHolderAfter);
         const holderName = hp ? hp.playerName : 'Champ';
         const pieceImg = isUnification ? 'images/metro.png' : 'images/city.png';
-        
+
         mainNode.innerHTML = `
           <img src="${pieceImg}" alt="${isUnification ? 'Unification' : 'Champion'}" class="piece-img">
           <div class="node-name">${escapeHtml(holderName)}</div>
           <div class="node-date">${dateStr}</div>
         `;
-        
+
         mainNode.style.top = currentY + 'px';
         if (hasInterimState && !isUnification) {
           mainNode.style.left = mainWithInterimX;
@@ -1249,10 +1252,10 @@ async function renderLineage(division) {
           else if (snakePos === 3) mainNode.style.left = leftMainX;
           snakePos = (snakePos + 1) % 4;
         }
-        
+
         container.appendChild(mainNode);
         nodes.push({ id: mainNode.dataset.id, el: mainNode });
-        
+
         if (lastMainNode) {
           connections.push({ from: lastMainNode.dataset.id, to: mainNode.dataset.id });
         }
@@ -1264,20 +1267,20 @@ async function renderLineage(division) {
         interimNode = document.createElement('div');
         interimNode.className = 'lineage-node node-interim';
         interimNode.dataset.id = 'interim_' + match.id;
-        
-        const dateStr = new Date(match.playedAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'});
+
+        const dateStr = new Date(match.playedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
         const ip = match.placements.find(p => p.playerId === match.interimHolderAfter);
         const holderName = ip ? ip.playerName : 'Interim';
-        
+
         interimNode.innerHTML = `
           <img src="images/settlement.png" alt="Interim" class="piece-img">
           <div class="node-name">${escapeHtml(holderName)}</div>
           <div class="node-date">${dateStr}</div>
         `;
-        
+
         interimNode.style.top = currentY + 'px';
         interimNode.style.left = interimX;
-        
+
         container.appendChild(interimNode);
         nodes.push({ id: interimNode.dataset.id, el: interimNode });
 
@@ -1286,14 +1289,14 @@ async function renderLineage(division) {
         } else if (lastMainNode && lastMainNode !== mainNode) {
           connections.push({ from: lastMainNode.dataset.id, to: interimNode.dataset.id });
         } else if (mainNode) {
-           connections.push({ from: mainNode.dataset.id, to: interimNode.dataset.id });
+          connections.push({ from: mainNode.dataset.id, to: interimNode.dataset.id });
         }
         lastInterimNode = interimNode;
       }
-      
+
       if (isUnification && lastInterimNode && mainNode) {
-         connections.push({ from: lastInterimNode.dataset.id, to: mainNode.dataset.id });
-         lastInterimNode = null;
+        connections.push({ from: lastInterimNode.dataset.id, to: mainNode.dataset.id });
+        lastInterimNode = null;
       }
 
       currentY += yStep;
@@ -1320,18 +1323,18 @@ function drawArrows(connections, nodes, svg) {
   connections.forEach(conn => {
     const fromNode = nodes.find(n => n.id === conn.from);
     const toNode = nodes.find(n => n.id === conn.to);
-    
+
     if (fromNode && toNode) {
       // Nodes use transform: translate(-50%, -50%) so their center is at (left, top)
       const startX = fromNode.el.offsetLeft;
       const startY = fromNode.el.offsetTop;
       const endX = toNode.el.offsetLeft;
       const endY = toNode.el.offsetTop;
-      
+
       const dx = endX - startX;
       const dy = endY - startY;
-      const length = Math.sqrt(dx*dx + dy*dy);
-      
+      const length = Math.sqrt(dx * dx + dy * dy);
+
       if (length === 0) return;
 
       let angle = Math.atan2(dy, dx) * (180 / Math.PI);
@@ -1344,14 +1347,14 @@ function drawArrows(connections, nodes, svg) {
       }
 
       // We want a constant spacing between roads so they don't stretch
-      const fixedSpacing = 75; 
+      const fixedSpacing = 75;
       // Minimum gap from the center of the nodes to the first/last road
-      const minOffset = 65; 
-      
+      const minOffset = 65;
+
       let availablePath = length - (minOffset * 2);
       let roadCount = 1; // Always place at least one road
       if (availablePath >= 0) {
-         roadCount = Math.floor(availablePath / fixedSpacing) + 1;
+        roadCount = Math.floor(availablePath / fixedSpacing) + 1;
       }
       roadCount = Math.min(5, roadCount); // Cap at 5
 
@@ -1362,17 +1365,17 @@ function drawArrows(connections, nodes, svg) {
       for (let i = 0; i < roadCount; i++) {
         const dist = startDist + (i * fixedSpacing);
         const ratio = dist / length;
-        
+
         const roadX = startX + dx * ratio;
         const roadY = startY + dy * ratio;
-        
+
         const roadEl = document.createElement('div');
         roadEl.className = 'lineage-road';
         roadEl.innerHTML = `<img src="images/road.png" alt="road">`;
         roadEl.style.left = roadX + 'px';
         roadEl.style.top = roadY + 'px';
         roadEl.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
-        
+
         container.appendChild(roadEl);
       }
     }
