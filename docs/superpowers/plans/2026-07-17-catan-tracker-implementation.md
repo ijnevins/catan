@@ -1039,7 +1039,7 @@ Build a highly tactile front end. Emulate physical board elements using custom t
   <body>
     <header class="tactile-header">
       <h1>CATAN LINEAL CHAMPIONSHIP</h1>
-      <p>Recording victors and settlement development in the Victor Almanac</p>
+      <p>The Catan Almanac of victors, settlements, and reigning champions</p>
     </header>
 
     <main class="dashboard-grid">
