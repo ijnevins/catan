@@ -1039,7 +1039,7 @@ Build a highly tactile front end. Emulate physical board elements using custom t
   <body>
     <header class="tactile-header">
       <h1>CATAN LINEAL CHAMPIONSHIP</h1>
-      <p>Tracking matches and UFC-style division crowns</p>
+      <p>Recording victors and settlement development in the Victor Almanac</p>
     </header>
 
     <main class="dashboard-grid">
