@@ -70,4 +70,20 @@ describe('Gallery Service', () => {
     const diskPath = path.join(__dirname, '../public', img.imageUrl);
     expect(fs.existsSync(diskPath)).toBe(true);
   });
+
+  test('should create gallery image linked to a specific matchId', async () => {
+    const matchId = 'match_12345';
+    const img = await galleryService.createImage(
+      'https://example.com/winner.jpg',
+      '2026-07-23',
+      'Winner photo',
+      matchId
+    );
+
+    expect(img.matchId).toBe('match_12345');
+
+    const images = await galleryService.getImages();
+    expect(images.length).toBe(1);
+    expect(images[0].matchId).toBe('match_12345');
+  });
 });

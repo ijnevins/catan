@@ -1191,3 +1191,146 @@ input[type="date"]:focus {
 .lineage-path {
   display: none;
 }
+
+/* --- MATCH PHOTOS & LINKED GAME STYLES --- */
+.gallery-match-select {
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  border: 2px solid var(--color-border);
+  background-color: #fff;
+  color: var(--color-ink);
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.match-photo-btn {
+  padding: 4px 10px;
+  font-family: var(--font-tactile);
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 2px solid var(--color-border);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.match-photo-btn.has-photos {
+  background-color: var(--color-wheat);
+  color: var(--color-wood);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.match-photo-btn.has-photos:hover {
+  background-color: var(--color-gold);
+  transform: translateY(-1px);
+}
+
+.match-photo-btn.add-photo {
+  background-color: transparent;
+  color: var(--color-wood);
+  border-style: dashed;
+}
+
+.match-photo-btn.add-photo:hover {
+  background-color: rgba(139, 90, 43, 0.1);
+}
+
+.gallery-slide-match-badge {
+  display: inline-block;
+  background-color: var(--color-wheat);
+  color: var(--color-wood);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 6px;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.gallery-slide-match-badge:hover {
+  background-color: var(--color-gold);
+  transform: scale(1.02);
+}
+
+/* Match Photos Modal Lightbox */
+.match-photos-modal-content {
+  max-width: 650px;
+  width: 90%;
+}
+
+.match-photos-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-wood);
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(139, 90, 43, 0.2);
+}
+
+.match-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.match-photo-card {
+  background: #fff;
+  border: 2px solid var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.match-photo-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.match-photo-card img:hover {
+  transform: scale(1.05);
+}
+
+.match-photo-info {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--color-parchment);
+}
+
+.match-photo-date {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: bold;
+}
+
+.match-photo-desc {
+  font-size: 0.85rem;
+  color: var(--color-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.no-photos-msg {
+  text-align: center;
+  color: var(--color-wood);
+  padding: 30px 10px;
+  font-size: 1rem;
+}
+
+.match-photos-actions {
+  margin-top: 20px;
+  text-align: right;
+}

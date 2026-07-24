@@ -124,6 +124,13 @@
               <label for="galleryDescInput">Caption / Description:</label>
               <input type="text" id="galleryDescInput" placeholder="A brief description of this memory...">
             </div>
+
+            <div class="form-group match-field">
+              <label for="galleryMatchSelect">Link to Game (Optional):</label>
+              <select id="galleryMatchSelect" class="gallery-match-select">
+                <option value="">-- None (General Photo) --</option>
+              </select>
+            </div>
           </div>
 
           <button type="submit" class="retro-btn btn-primary">Add to Photos</button>
@@ -224,6 +231,7 @@
               <th>Division</th>
               <th>Winner</th>
               <th>Final Placements &amp; Stats (VP, Settlements, Cities, Metro, Road)</th>
+              <th>Photos</th>
             </tr>
           </thead>
           <tbody id="matchHistoryBody">
@@ -303,6 +311,23 @@
         </div>
         <button type="submit" class="retro-btn btn-secondary">Register &amp; Link</button>
       </form>
+    </div>
+  </div>
+
+  <!-- MATCH PHOTOS MODAL -->
+  <div id="matchPhotosModal" class="modal-overlay">
+    <div class="modal-content catan-card match-photos-modal-content">
+      <span class="modal-close" id="closeMatchPhotosModal">&times;</span>
+      <h2 class="section-title" id="matchPhotosModalTitle">Game Photos</h2>
+      <div id="matchPhotosSubtitle" class="match-photos-subtitle"></div>
+      
+      <div id="matchPhotosBody" class="match-photos-body">
+        <!-- Dynamic photo content -->
+      </div>
+      
+      <div class="match-photos-actions">
+        <button id="matchPhotosUploadBtn" class="retro-btn btn-primary">+ Add Photo for this Game</button>
+      </div>
     </div>
   </div>
 

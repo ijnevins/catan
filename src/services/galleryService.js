@@ -25,7 +25,7 @@ const galleryService = {
     });
   },
 
-  async createImage(imageInput, date, description = '') {
+  async createImage(imageInput, date, description = '', matchId = null) {
     if (!imageInput) {
       throw new Error('Image source (file or URL) is required.');
     }
@@ -74,6 +74,7 @@ const galleryService = {
       imageUrl,
       description: description.trim(),
       date,
+      matchId: matchId || null,
       createdAt: new Date().toISOString()
     };
 

@@ -1,6 +1,7 @@
 let activeTab = 'global';
 let playersList = [];
 let currentUser = null;
+let matchesList = [];
 
 // Axial coordinates list for standard spiral hex board layout
 const hexCoords = [
@@ -609,20 +610,21 @@ function renderHexBoard(players) {
 async function renderMatchHistory() {
   const tbody = document.getElementById('matchHistoryBody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="4">Loading match history...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="5">Loading match history...</td></tr>';
 
   try {
     const res = await fetch('/api/matches');
-    const matches = await res.json();
+    matchesList = await res.json();
+    populateGalleryMatchSelect();
 
     tbody.innerHTML = '';
-    if (!matches || matches.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4">No matches played yet.</td></tr>';
+    if (!matchesList || matchesList.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5">No matches played yet.</td></tr>';
       return;
     }
 
     // Sort matches chronologically desc (most recent first)
-    matches.sort((a, b) => new Date(b.playedAt) - new Date(a.playedAt));
+    const matches = [...matchesList].sort((a, b) => new Date(b.playedAt) - new Date(a.playedAt));
 
     matches.forEach(match => {
       const tr = document.createElement('tr');
@@ -649,16 +651,73 @@ async function renderMatchHistory() {
         })
         .join('<br>');
 
+      // Find photos linked to this match
+      const linkedPhotos = galleryImages.filter(img => img.matchId === match.id);
+      let photosTdHtml = '';
+      if (linkedPhotos.length > 0) {
+        photosTdHtml = `
+          <button class="match-photo-btn has-photos" data-match-id="${match.id}">
+            📷 ${linkedPhotos.length} Photo${linkedPhotos.length > 1 ? 's' : ''}
+          </button>
+        `;
+      } else {
+        photosTdHtml = `
+          <button class="match-photo-btn add-photo" data-match-id="${match.id}">
+            + Photo
+          </button>
+        `;
+      }
+
       tr.innerHTML = `
         <td>${dateStr}</td>
         <td>${match.division}-Player</td>
         <td><strong>${escapeHtml(winnerName)}</strong></td>
         <td style="text-align: left;"><small>${placementsStr}</small></td>
+        <td>${photosTdHtml}</td>
       `;
+
+      // Bind photo button event
+      const photoBtn = tr.querySelector('.match-photo-btn');
+      if (photoBtn) {
+        photoBtn.addEventListener('click', () => {
+          if (linkedPhotos.length > 0) {
+            openMatchPhotosModal(match.id);
+          } else {
+            uploadPhotoForMatch(match.id);
+          }
+        });
+      }
+
       tbody.appendChild(tr);
     });
   } catch (err) {
-    tbody.innerHTML = '<tr><td colspan="4">Error loading match history.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5">Error loading match history.</td></tr>';
+  }
+}
+
+function populateGalleryMatchSelect() {
+  const select = document.getElementById('galleryMatchSelect');
+  if (!select) return;
+  const currentValue = select.value;
+  select.innerHTML = '<option value="">-- None (General Photo) --</option>';
+
+  // Sort matches chronologically desc
+  const sorted = [...matchesList].sort((a, b) => new Date(b.playedAt) - new Date(a.playedAt));
+
+  sorted.forEach(m => {
+    const dateStr = new Date(m.playedAt).toLocaleDateString('en-US', {
+      year: 'numeric', month: 'short', day: 'numeric'
+    });
+    const winner = m.placements.find(p => p.place === 1);
+    const winnerName = winner ? winner.playerName : 'Unknown';
+    const opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = `${dateStr} - ${m.division}-Player (Winner: ${winnerName})`;
+    select.appendChild(opt);
+  });
+
+  if (currentValue) {
+    select.value = currentValue;
   }
 }
 
@@ -673,6 +732,20 @@ async function initGallery() {
   const fileLabel = document.getElementById('fileNameLabel');
   const dateInput = document.getElementById('galleryDateInput');
   const form = document.getElementById('galleryForm');
+
+  // Modal setup
+  const closeMatchModal = document.getElementById('closeMatchPhotosModal');
+  const matchModal = document.getElementById('matchPhotosModal');
+  if (closeMatchModal && matchModal) {
+    closeMatchModal.addEventListener('click', () => {
+      matchModal.classList.remove('active');
+    });
+    matchModal.addEventListener('click', (e) => {
+      if (e.target === matchModal) {
+        matchModal.classList.remove('active');
+      }
+    });
+  }
 
   // Set default date to today
   if (dateInput) {
@@ -703,6 +776,7 @@ async function initGallery() {
       const fileInput = document.getElementById('galleryFileInput');
       const dateInput = document.getElementById('galleryDateInput');
       const descInput = document.getElementById('galleryDescInput');
+      const matchSelect = document.getElementById('galleryMatchSelect');
       const submitBtn = form.querySelector('button[type="submit"]');
 
       let imageSource = '';
@@ -727,7 +801,8 @@ async function initGallery() {
       const payload = {
         image: imageSource,
         date: dateInput.value,
-        description: descInput.value || ''
+        description: descInput.value || '',
+        matchId: matchSelect ? (matchSelect.value || null) : null
       };
 
       try {
@@ -744,12 +819,13 @@ async function initGallery() {
 
         const newImage = await res.json();
 
-        // Reset form and reload gallery
+        // Reset form and reload gallery & match history
         form.reset();
         if (fileLabel) fileLabel.innerText = 'No file chosen';
         if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
 
         await fetchGalleryImages();
+        await renderMatchHistory();
 
         // Show the newly added slide (which is sorted by date)
         const newIdx = galleryImages.findIndex(img => img.id === newImage.id);
@@ -871,13 +947,39 @@ function renderSlider() {
       // Fallback
     }
 
+    let matchBadgeHtml = '';
+    if (img.matchId) {
+      const match = matchesList.find(m => m.id === img.matchId);
+      if (match) {
+        const winner = match.placements.find(p => p.place === 1);
+        const winnerName = winner ? winner.playerName : 'Unknown';
+        const matchDateStr = new Date(match.playedAt).toLocaleDateString('en-US', {
+          year: 'numeric', month: 'short', day: 'numeric'
+        });
+        matchBadgeHtml = `
+          <div class="gallery-slide-match-badge" data-match-id="${escapeHtml(img.matchId)}">
+            🏆 Game Photo: ${escapeHtml(matchDateStr)} (${match.division}-Player - Winner: ${escapeHtml(winnerName)})
+          </div>
+        `;
+      }
+    }
+
     slide.innerHTML = `
       <img src="${img.imageUrl}" alt="${escapeHtml(img.description || 'Catan memory')}" onerror="this.src='https://placehold.co/800x400/1a1510/dfd7c2?text=Image+Load+Failed'">
       <div class="gallery-slide-caption">
+        ${matchBadgeHtml}
         <span class="gallery-slide-date">${escapeHtml(friendlyDate)}</span>
         <span class="gallery-slide-desc">${escapeHtml(img.description || 'No caption')}</span>
       </div>
     `;
+
+    const badgeEl = slide.querySelector('.gallery-slide-match-badge');
+    if (badgeEl) {
+      badgeEl.addEventListener('click', () => {
+        openMatchPhotosModal(img.matchId);
+      });
+    }
+
     slider.appendChild(slide);
 
     // Create Dot
@@ -888,6 +990,106 @@ function renderSlider() {
     });
     dotsContainer.appendChild(dot);
   });
+}
+
+function openMatchPhotosModal(matchId) {
+  const match = matchesList.find(m => m.id === matchId);
+  if (!match) return;
+
+  const modal = document.getElementById('matchPhotosModal');
+  const title = document.getElementById('matchPhotosModalTitle');
+  const subtitle = document.getElementById('matchPhotosSubtitle');
+  const body = document.getElementById('matchPhotosBody');
+  const uploadBtn = document.getElementById('matchPhotosUploadBtn');
+
+  const dateStr = new Date(match.playedAt).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric'
+  });
+  const winner = match.placements.find(p => p.place === 1);
+  const winnerName = winner ? winner.playerName : 'Unknown';
+
+  title.innerText = `${match.division}-Player Game Photos`;
+  subtitle.innerHTML = `Date: <strong>${dateStr}</strong> &nbsp;|&nbsp; Winner: <strong>${escapeHtml(winnerName)}</strong>`;
+
+  const linkedPhotos = galleryImages.filter(img => img.matchId === matchId);
+  body.innerHTML = '';
+
+  if (linkedPhotos.length === 0) {
+    body.innerHTML = '<p class="no-photos-msg">No photos linked to this game yet. Click below to add one!</p>';
+  } else {
+    const grid = document.createElement('div');
+    grid.className = 'match-photos-grid';
+
+    linkedPhotos.forEach(img => {
+      const card = document.createElement('div');
+      card.className = 'match-photo-card';
+
+      let friendlyDate = img.date;
+      try {
+        const parts = img.date.split('-');
+        if (parts.length === 3) {
+          const dateObj = new Date(Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10)));
+          friendlyDate = dateObj.toLocaleDateString(undefined, {
+            year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC'
+          });
+        }
+      } catch (e) {}
+
+      card.innerHTML = `
+        <a href="${img.imageUrl}" target="_blank" title="Click to view full image">
+          <img src="${img.imageUrl}" alt="${escapeHtml(img.description || 'Game Photo')}">
+        </a>
+        <div class="match-photo-info">
+          <span class="match-photo-date">${escapeHtml(friendlyDate)}</span>
+          <span class="match-photo-desc">${escapeHtml(img.description || 'No caption')}</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    body.appendChild(grid);
+  }
+
+  if (uploadBtn) {
+    uploadBtn.onclick = () => {
+      modal.classList.remove('active');
+      uploadPhotoForMatch(matchId);
+    };
+  }
+
+  modal.classList.add('active');
+}
+
+function uploadPhotoForMatch(matchId) {
+  // Navigate to Home tab
+  document.querySelectorAll('.page-tab-btn').forEach(b => b.classList.remove('active'));
+  const homeTabBtn = document.querySelector('.page-tab-btn[data-page="home"]');
+  if (homeTabBtn) homeTabBtn.classList.add('active');
+
+  document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+  const homePage = document.getElementById('page-home');
+  if (homePage) homePage.classList.add('active');
+
+  // Pre-select match in dropdown
+  const select = document.getElementById('galleryMatchSelect');
+  if (select) {
+    select.value = matchId;
+  }
+
+  // Pre-fill date from match if possible
+  const match = matchesList.find(m => m.id === matchId);
+  if (match) {
+    const dateInput = document.getElementById('galleryDateInput');
+    if (dateInput && match.playedAt) {
+      dateInput.value = match.playedAt.split('T')[0];
+    }
+  }
+
+  // Scroll gallery form into view smoothly
+  const galleryWrapper = document.querySelector('.add-gallery-wrapper');
+  if (galleryWrapper) {
+    galleryWrapper.scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
 // --- Authentication Management ---
