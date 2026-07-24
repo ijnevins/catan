@@ -976,7 +976,7 @@ function renderSlider() {
     }
 
     slide.innerHTML = `
-      <img src="${img.imageUrl}" alt="${escapeHtml(img.description || 'Catan memory')}" onerror="this.src='https://placehold.co/800x400/1a1510/dfd7c2?text=Image+Load+Failed'">
+      <img src="${img.imageUrl}" alt="${escapeHtml(img.description || 'Catan memory')}" onerror="this.src='https://placehold.co/800x400/f7c543/1a1510?text=Image+Load+Failed'">
       <div class="gallery-slide-caption">
         ${matchBadgeHtml}
         <span class="gallery-slide-date">${escapeHtml(friendlyDate)}</span>

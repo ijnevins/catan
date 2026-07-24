@@ -723,8 +723,8 @@ input[type="date"]:focus {
 .gallery-slider {
   flex-grow: 1;
   height: 400px;
-  border: 4px double var(--color-border);
-  background-color: var(--color-ink);
+  border: none;
+  background-color: #f7c543;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -754,13 +754,13 @@ input[type="date"]:focus {
   width: 100%;
   height: calc(100% - 70px);
   object-fit: contain;
-  background-color: #1a1510;
+  background-color: transparent;
 }
 
 .gallery-slide-caption {
   height: 70px;
-  background-color: var(--color-parchment);
-  border-top: 3px double var(--color-border);
+  background-color: transparent;
+  border-top: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -801,13 +801,16 @@ input[type="date"]:focus {
 }
 
 .gallery-nav-btn {
-  background-color: var(--color-wood);
-  color: var(--color-parchment);
-  border: 2px solid var(--color-border);
+  background-color: #233e8a;
+  color: #ffffff;
+  border: none;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   font-family: var(--font-header);
-  font-size: 1.5rem;
-  width: 44px;
-  height: 44px;
+  font-size: 1.8rem;
+  font-weight: 900;
+  text-shadow: 1px 0 0 #ffffff, -1px 0 0 #ffffff, 0 1px 0 #ffffff, 0 -1px 0 #ffffff;
+  width: 52px;
+  height: 45px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -816,7 +819,7 @@ input[type="date"]:focus {
 }
 
 .gallery-nav-btn:hover {
-  background-color: var(--color-clay);
+  background-color: #1a2e6a;
   transform: scale(1.05);
 }
 
@@ -1112,8 +1115,8 @@ input[type="date"]:focus {
 
 /* --- LINEAGE VISUALIZER --- */
 .lineage-box {
-  background: var(--color-ink);
-  color: var(--color-bg);
+  background: #f7c543;
+  border: none;
 }
 
 .lineage-container {
