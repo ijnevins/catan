@@ -714,15 +714,18 @@ input[type="date"]:focus {
 .gallery-slider-wrapper {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 20px;
   position: relative;
   margin-top: 15px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .gallery-slider {
   flex-grow: 1;
-  height: 400px;
+  height: 600px;
   border: none;
   background-color: #f7c543;
   position: relative;
@@ -752,13 +755,14 @@ input[type="date"]:focus {
 
 .gallery-slide img {
   width: 100%;
-  height: calc(100% - 70px);
+  flex-grow: 1;
   object-fit: contain;
   background-color: transparent;
 }
 
 .gallery-slide-caption {
-  height: 70px;
+  min-height: 70px;
+  height: auto;
   background-color: transparent;
   border-top: none;
   display: flex;
@@ -767,6 +771,8 @@ input[type="date"]:focus {
   align-items: center;
   padding: 5px 15px;
   box-sizing: border-box;
+  position: relative;
+  z-index: 10;
 }
 
 .gallery-slide-date {
@@ -782,10 +788,8 @@ input[type="date"]:focus {
   font-size: 1.1rem;
   margin-top: 2px;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90%;
+  white-space: normal;
+  width: 100%;
 }
 
 .gallery-slide-placeholder {
@@ -831,21 +835,22 @@ input[type="date"]:focus {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin: 15px 0 25px 0;
+  margin: 40px 0 25px 0;
 }
 
 .gallery-dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: #8b7c62;
-  border: 1px solid var(--color-border);
+  background-color: transparent;
+  border: 2px solid var(--color-red);
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s;
 }
 
 .gallery-dot.active {
-  background-color: var(--color-wheat);
+  background-color: var(--color-red);
+  border-color: var(--color-red);
   transform: scale(1.2);
 }
 
