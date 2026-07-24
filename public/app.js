@@ -246,6 +246,36 @@ async function renderCrownsAndLineage() {
     const res = await fetch('/api/stats');
     const data = await res.json();
 
+    if (galleryImages.length === 0) {
+      try {
+        const gRes = await fetch('/api/gallery');
+        galleryImages = await gRes.json();
+      } catch (e) {}
+    }
+    if (matchesList.length === 0) {
+      try {
+        const mRes = await fetch('/api/matches');
+        matchesList = await mRes.json();
+      } catch (e) {}
+    }
+
+    function getPlayerPhotoUrl(playerName) {
+      if (!playerName || playerName === 'Vacant') return '';
+      const wonMatches = matchesList.filter(m => m.placements[0] && m.placements[0].playerName === playerName);
+      wonMatches.sort((a, b) => new Date(b.playedAt) - new Date(a.playedAt));
+      for (const m of wonMatches) {
+        const photo = galleryImages.find(img => img.matchId === m.id);
+        if (photo) return photo.imageUrl;
+      }
+      const playedMatches = matchesList.filter(m => m.placements.some(p => p.playerName === playerName));
+      playedMatches.sort((a, b) => new Date(b.playedAt) - new Date(a.playedAt));
+      for (const m of playedMatches) {
+        const photo = galleryImages.find(img => img.matchId === m.id);
+        if (photo) return photo.imageUrl;
+      }
+      return '';
+    }
+
     const crowns = data.crowns;
     const reigns = data.reigns;
 
@@ -259,7 +289,11 @@ async function renderCrownsAndLineage() {
       const crownImg = div === 4 ? '4-player-victor.png' : `${div}-player-victory.png`;
 
       if (crown) {
+        const photoUrl = getPlayerPhotoUrl(crown.currentHolderName);
+        const photoHtml = photoUrl ? `<div class="crown-photo-container"><img src="${photoUrl}" class="crown-photo" alt="Champion"></div>` : '';
+
         badge.innerHTML = `
+          ${photoHtml}
           <img src="images/${crownImg}" alt="Crown" class="scroll-img">
           <div class="victory-card-content">
             <div class="victory-header-square">${div}</div>
@@ -273,9 +307,13 @@ async function renderCrownsAndLineage() {
         crownsContainer.appendChild(badge);
 
         if (crown.interimHolderId) {
+          const interimPhotoUrl = getPlayerPhotoUrl(crown.interimHolderName);
+          const interimPhotoHtml = interimPhotoUrl ? `<div class="crown-photo-container"><img src="${interimPhotoUrl}" class="crown-photo" alt="Interim Champion"></div>` : '';
+          
           const interimBadge = document.createElement('div');
           interimBadge.className = 'crown-badge interim-badge';
           interimBadge.innerHTML = `
+            ${interimPhotoHtml}
             <img src="images/${crownImg}" alt="Crown" class="scroll-img">
             <div class="victory-card-content">
               <div class="victory-header-square">${div}</div>
