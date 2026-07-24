@@ -708,7 +708,6 @@ input[type="date"]:focus {
 /* Gallery Styles */
 .gallery-box {
   grid-column: 1 / -1;
-  background-color: #dfd7c2;
   border-color: var(--color-wood);
 }
 
@@ -850,8 +849,6 @@ input[type="date"]:focus {
 /* Add image form styling */
 .add-gallery-wrapper {
   margin-top: 30px;
-  border-top: 3px double var(--color-clay);
-  padding-top: 20px;
 }
 
 .subsection-title {
