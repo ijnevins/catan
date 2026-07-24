@@ -256,13 +256,18 @@ async function renderCrownsAndLineage() {
       const badge = document.createElement('div');
       badge.className = 'crown-badge';
 
+      const crownImg = div === 4 ? '4-player-victor.png' : `${div}-player-victory.png`;
+
       if (crown) {
         badge.innerHTML = `
-          <img src="images/scroll.webp" alt="Scroll" class="scroll-img">
-          <div class="scroll-content">
-            <h3>${div}-Player Victor</h3>
-            <div class="holder-name">${escapeHtml(crown.currentHolderName)}</div>
-            <div class="defenses-info">${crown.defensesCount} Defense${crown.defensesCount !== 1 ? 's' : ''}</div>
+          <img src="images/${crownImg}" alt="Crown" class="scroll-img">
+          <div class="victory-card-content">
+            <div class="victory-header-square">${div}</div>
+            <div class="victory-header-rect">Player Victor</div>
+            <div class="victory-bottom-text">
+              <div class="holder-name">${escapeHtml(crown.currentHolderName)}</div>
+              <div class="defenses-info">${crown.defensesCount} Defense${crown.defensesCount !== 1 ? 's' : ''}</div>
+            </div>
           </div>
         `;
         crownsContainer.appendChild(badge);
@@ -271,22 +276,28 @@ async function renderCrownsAndLineage() {
           const interimBadge = document.createElement('div');
           interimBadge.className = 'crown-badge interim-badge';
           interimBadge.innerHTML = `
-            <img src="images/scroll.webp" alt="Scroll" class="scroll-img">
-            <div class="scroll-content">
-              <h3>${div}-Player Victor INTERIM</h3>
-              <div class="holder-name interim-text">${escapeHtml(crown.interimHolderName)}</div>
-              <div class="defenses-info">${crown.interimConsecutiveWins} Consecutive Win${crown.interimConsecutiveWins !== 1 ? 's' : ''}</div>
+            <img src="images/${crownImg}" alt="Crown" class="scroll-img">
+            <div class="victory-card-content">
+              <div class="victory-header-square">${div}</div>
+              <div class="victory-header-rect">Player Victor (Interim)</div>
+              <div class="victory-bottom-text">
+                <div class="holder-name interim-text">${escapeHtml(crown.interimHolderName)}</div>
+                <div class="defenses-info">${crown.interimConsecutiveWins} Consecutive Win${crown.interimConsecutiveWins !== 1 ? 's' : ''}</div>
+              </div>
             </div>
           `;
           crownsContainer.appendChild(interimBadge);
         }
       } else {
         badge.innerHTML = `
-          <img src="images/scroll.webp" alt="Scroll" class="scroll-img">
-          <div class="scroll-content">
-            <h3>${div}-Player Victor</h3>
-            <div class="holder-name vacant-text">Vacant</div>
-            <div class="defenses-info">No champion crowned yet</div>
+          <img src="images/${crownImg}" alt="Crown" class="scroll-img">
+          <div class="victory-card-content">
+            <div class="victory-header-square">${div}</div>
+            <div class="victory-header-rect">Player Victor</div>
+            <div class="victory-bottom-text">
+              <div class="holder-name vacant-text">Vacant</div>
+              <div class="defenses-info">No champion crowned yet</div>
+            </div>
           </div>
         `;
         crownsContainer.appendChild(badge);
