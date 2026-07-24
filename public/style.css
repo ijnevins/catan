@@ -67,8 +67,6 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
-  max-width: 1200px;
-  width: 95%;
 }
 
 @media (max-width: 800px) {
@@ -83,7 +81,7 @@ body {
   border-radius: 0;
   padding: 24px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Specific styles representing Catan components */
@@ -92,9 +90,8 @@ body {
   background: transparent;
   border: none;
   box-shadow: none;
+  overflow: visible;
 }
-
-
 
 .stats-box {
   grid-column: 1 / -1;
@@ -190,13 +187,21 @@ body {
 
 .section-title {
   font-family: var(--font-header);
-  color: var(--color-clay);
   font-size: 1.5rem;
-  border-bottom: 3px double var(--color-clay);
-  padding-bottom: 8px;
   margin-top: 0;
   margin-bottom: 20px;
-  text-align: center;
+  text-align: left;
+  border-bottom: none;
+  background-color: #A81B1B;
+  color: #f7c543;
+  padding: 12px 30px 12px 64px;
+  margin-left: -64px;
+  width: 35%;
+  min-width: 350px;
+  box-sizing: border-box;
+  clip-path: polygon(0% 0%, calc(100% - 25px) 0%, 100% 50%, calc(100% - 25px) 100%, 0% 100%);
+  position: relative;
+  z-index: 2;
 }
 
 .crowns-row {
