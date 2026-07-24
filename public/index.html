@@ -4,24 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catan Match & Crown Tracker</title>
+  <title>The Almanac of Victors</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <div class="auth-bar" id="authBar">
-    <div class="auth-left">
-      <span class="auth-welcome" id="authWelcome">Welcome! Log in to customize your tile preference.</span>
-    </div>
-    <div class="auth-right" id="authActions">
-      <button class="auth-btn" id="showLoginBtn">Login</button>
-      <button class="auth-btn" id="showRegisterBtn">Register</button>
-    </div>
-  </div>
 
   <header class="tactile-header">
     <img src="images/Catan-title-logo-NEW.png" alt="Catan Lineal Championship" class="main-logo">
-    <p>The Catan Almanac of Victors</p>
+    <p>The Almanac of Victors</p>
   </header>
 
   <!-- PAGE-LEVEL TAB NAVIGATION -->
@@ -61,9 +52,9 @@
     <section class="catan-card lineage-box">
       <h2 class="section-title">The Crown Lineage</h2>
       <div class="division-tabs" id="lineageTabs">
-        <button class="tab-btn active" data-div="4">4-Player Crown</button>
-        <button class="tab-btn" data-div="5">5-Player Crown</button>
-        <button class="tab-btn" data-div="6">6-Player Belt</button>
+        <button class="tab-btn active" data-div="4">4-Player Victory</button>
+        <button class="tab-btn" data-div="5">5-Player Victory</button>
+        <button class="tab-btn" data-div="6">6-Player Victory</button>
       </div>
 
       <div class="lineage-container" id="lineageContainer">
@@ -249,10 +240,22 @@
     </section>
   </main>
 
+  <div class="auth-bar" id="authBar">
+    <div class="auth-left">
+      <span class="auth-welcome" id="authWelcome">Welcome! Log in to customize your tile preference.</span>
+    </div>
+    <div class="auth-right" id="authActions">
+      <button class="auth-btn" id="showLoginBtn">Login</button>
+      <button class="auth-btn" id="showRegisterBtn">Register</button>
+    </div>
+  </div>
+
   <footer class="tactile-footer">
     <p>Hexes, clay, and wheat. Long live the Crown holder.</p>
   </footer>
   </div> <!-- END MAIN CONTAINER BOX -->
+
+
 
   <!-- LOGIN MODAL -->
   <div id="loginModal" class="modal-overlay">

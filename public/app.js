@@ -1429,6 +1429,7 @@ async function renderLineage(division) {
     const res = await fetch(`/api/crowns/timeline/${division}`);
     const data = await res.json();
     const timeline = data.timeline || [];
+    timeline.reverse();
 
     if (timeline.length === 0) {
       const empty = document.createElement('div');
